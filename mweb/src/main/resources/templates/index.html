@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'home')}">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Portfolios Application: Index</title>
+</head>
+<body>
+<h1>Welcome to the Portfolios Application!</h1>
+<h2>List of users:</h2>
+
+<table id="users" class="table">
+    <tr>
+        <th style="width: 120px;">Full Name</th>
+        <th style="width: 80px;">Handle</th>
+    </tr>
+    <tr th:each="user : ${userSet}">
+        <td th:text="${user.fullName}">123</td>
+        <td th:text="${user.handle}">myHandle</td>
+    </tr>
+</table>
+
+</body>
+</html>

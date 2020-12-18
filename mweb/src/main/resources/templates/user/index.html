@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'user')}">
+<head>
+    <meta charset="UTF-8"/>
+    <title>User Landing</title>
+</head>
+<body>
+<h1>User Landing Page</h1>
+<h2>Accounts List</h2>
+<table id="accounts" class="table">
+    <tr>
+        <th style="width: 100px;">Account Name</th>
+        <th style="width: 80px;">User Handle</th>
+    </tr>
+    <tr th:each="account : ${accountSet}">
+        <td th:text="${account.name}">123</td>
+        <td th:text="${account.user.handle}">handle</td>
+    </tr>
+</table>
+
+</body>
+</html>
