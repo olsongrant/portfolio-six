@@ -20,8 +20,8 @@
 		</dependency>
 	</dependencies>
 	<modules>
-		<module>web</module>
-		<module>data</module>
+		<module>mweb</module>
+		<module>mdata</module>
 	</modules>
 	<build>
 		<plugins>
