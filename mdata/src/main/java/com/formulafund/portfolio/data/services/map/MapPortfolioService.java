@@ -1,42 +1,34 @@
 package com.formulafund.portfolio.data.services.map;
 
 import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.function.BiFunction;
 import java.util.stream.Collectors;
-
-import com.formulafund.portfolio.data.model.Transaction;
-import com.formulafund.portfolio.data.model.TransactionType;
-import com.formulafund.portfolio.data.model.User;
 
 import org.springframework.stereotype.Service;
 
-import com.formulafund.portfolio.data.model.StockHolding;
-import com.formulafund.portfolio.data.model.StockPurchase;
-import com.formulafund.portfolio.data.model.StockSale;
-import com.formulafund.portfolio.data.model.Ticker;
 import com.formulafund.portfolio.data.model.Account;
 import com.formulafund.portfolio.data.model.Portfolio;
+import com.formulafund.portfolio.data.model.StockHolding;
+import com.formulafund.portfolio.data.model.Ticker;
+import com.formulafund.portfolio.data.model.Transaction;
+import com.formulafund.portfolio.data.model.TransactionType;
+import com.formulafund.portfolio.data.model.User;
 import com.formulafund.portfolio.data.services.InadequatePositionException;
 import com.formulafund.portfolio.data.services.PortfolioService;
-import com.formulafund.portfolio.data.services.StockPurchaseService;
-import com.formulafund.portfolio.data.services.StockSaleService;
+import com.formulafund.portfolio.data.services.TransactionService;
 import com.formulafund.portfolio.data.view.HoldingView;
 
 @Service
 public class MapPortfolioService extends BaseMapService<Portfolio> implements PortfolioService {
-	private StockSaleService stockSaleService;
-	private StockPurchaseService stockPurchaseService;
+
+	private TransactionService transactionService;
 
 	
-	public MapPortfolioService(StockSaleService aSaleService, StockPurchaseService aPurchaseService) {
-		this.stockSaleService = aSaleService;
-		this.stockPurchaseService = aPurchaseService;
+	public MapPortfolioService(TransactionService tService) {
+		this.transactionService = tService;
 	}
 
 	@Override
@@ -62,7 +54,7 @@ public class MapPortfolioService extends BaseMapService<Portfolio> implements Po
 	}
 	
 	public Set<Ticker> uniqueTickersForPortfolio(Portfolio aPortfolio) {
-		Set<StockPurchase> allPurchases = this.allPurchasesForPortfolio(aPortfolio);
+		Set<Transaction> allPurchases = this.allPurchasesForPortfolio(aPortfolio);
 		HashSet<Ticker> tickerSet = new HashSet<>();
 		allPurchases.forEach(sp -> tickerSet.add(sp.getTicker()));
 		return tickerSet;
@@ -90,13 +82,13 @@ public class MapPortfolioService extends BaseMapService<Portfolio> implements Po
 	}
 
 	@Override
-	public Set<StockPurchase> allPurchases() {
-		return this.stockPurchaseService.findAll();
+	public Set<Transaction> allPurchases() {
+		return this.transactionService.findAll();
 	}
 
 	@Override
-	public Set<StockPurchase> allPurchasesForPortfolio(Portfolio aPortfolio) {
-		Set<StockPurchase> purchases = this.allPurchases()
+	public Set<Transaction> allPurchasesForPortfolio(Portfolio aPortfolio) {
+		Set<Transaction> purchases = this.allPurchases()
 				.stream()
 				.filter(p -> aPortfolio.equals(p.getPortfolio()))
 				.collect(Collectors.toSet());
@@ -104,20 +96,20 @@ public class MapPortfolioService extends BaseMapService<Portfolio> implements Po
 	}
 
 	@Override
-	public Set<StockSale> allSales() {
-		return this.stockSaleService.findAll();
+	public Set<Transaction> allSales() {
+		return this.transactionService.findAll();
 	}
 	
 	public Set<Transaction> allTransactionsForPortfolio(Portfolio aPortfolio) {
 		HashSet<Transaction> transactionSet = new HashSet<>();
-		transactionSet.addAll((Collection<? extends Transaction>) this.allPurchasesForPortfolio(aPortfolio));
-		transactionSet.addAll((Collection<? extends Transaction>) this.allSalesForPortfolio(aPortfolio));
+		transactionSet.addAll(this.allPurchasesForPortfolio(aPortfolio));
+		transactionSet.addAll(this.allSalesForPortfolio(aPortfolio));
 		return transactionSet;
 	}
 
 	@Override
-	public Set<StockSale> allSalesForPortfolio(Portfolio aPortfolio) {
-		Set<StockSale> salesForPortfolio = this.allSales()
+	public Set<Transaction> allSalesForPortfolio(Portfolio aPortfolio) {
+		Set<Transaction> salesForPortfolio = this.allSales()
 			.stream()
 			.filter(s -> aPortfolio.equals(s.getPortfolio()))
 			.collect(Collectors.toSet());
@@ -131,8 +123,8 @@ public class MapPortfolioService extends BaseMapService<Portfolio> implements Po
 		}
 		Float quantityOnHand = this.getCurrentHoldingOf(aTicker, aPortfolio);
 		if (quantityOnHand >= quantity) {
-			StockSale aSale = StockSale.of(aTicker, LocalDateTime.now(), aPortfolio, quantity);
-			this.stockSaleService.save(aSale);
+			Transaction aSale = Transaction.saleOf(aTicker, LocalDateTime.now(), aPortfolio, quantity);
+			this.transactionService.save(aSale);
 			return quantityOnHand - quantity;
 		} else {
 			throw new InadequatePositionException("Portfolio only has " + 
