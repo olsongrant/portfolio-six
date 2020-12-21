@@ -2,8 +2,18 @@ package com.formulafund.portfolio.data.model;
 
 import java.time.LocalDateTime;
 
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
+
+@Entity
 public class Transaction extends BaseEntity {
 	private static final long serialVersionUID = 1L;
+	
+	@OneToOne
 	private Ticker ticker;
 	private Float shareQuantity;
 	private LocalDateTime transactionDateTime;
@@ -37,7 +47,12 @@ public class Transaction extends BaseEntity {
 	public void setTransactionType(TransactionType transactionType) {
 		this.transactionType = transactionType;
 	}
+	
+    @ManyToOne
+    @JoinColumn(name = "portfolio_id")
 	private Portfolio portfolio;
+    
+    @Enumerated(EnumType.STRING)
 	private TransactionType transactionType;
 	
 	public static Transaction purchaseOf(Ticker aTicker, LocalDateTime aPurchaseDate, Portfolio aPortfolio, Float quantity) {

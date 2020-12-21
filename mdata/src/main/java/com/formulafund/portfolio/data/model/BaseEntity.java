@@ -14,8 +14,7 @@ public class BaseEntity implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+
 	public Long getId() {
 		return id;
 	}
@@ -27,7 +26,9 @@ public class BaseEntity implements Serializable {
 	public boolean hasId() {
 		return (id == null) ? false : true;
 	}
-
+	
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	protected Long id;
 
 	@Override

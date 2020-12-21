@@ -1,8 +1,14 @@
 package com.formulafund.portfolio.data.model;
 
 import java.util.Set;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.OneToMany;
+
 import java.util.HashSet;
 
+@Entity
 public class User extends BaseEntity {
 	/**
 	 * 
@@ -10,8 +16,11 @@ public class User extends BaseEntity {
 	private static final long serialVersionUID = 1L;
 	private String fullName;
 	private String handle;
-	private Set<Account> accounts = new HashSet<>();
 	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+	private Set<Account> accounts = new HashSet<>();
+
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
 	public Set<Account> getAccounts() {
 		return accounts;
 	}
@@ -39,7 +48,7 @@ public class User extends BaseEntity {
 	}
 	@Override
 	public String toString() {
-		return "User [fullName=" + fullName + ", handle=" + handle + ", accounts=" + accounts + ", id=" + id + "]";
+		return "User [fullName=" + fullName + ", handle=" + handle + ", accounts=" + /* accounts  + */ ", id=" + id + "]";
 	}
 	
 	

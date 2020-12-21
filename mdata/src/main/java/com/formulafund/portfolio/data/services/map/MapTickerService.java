@@ -3,6 +3,7 @@ package com.formulafund.portfolio.data.services.map;
 import java.util.Optional;
 import java.util.Set;
 
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import com.formulafund.portfolio.data.model.Exchange;
@@ -13,15 +14,13 @@ import com.formulafund.portfolio.data.services.TickerService;
 
 
 @Service
+@Profile("map")
 public class MapTickerService extends BaseMapService<Ticker> implements TickerService {
 	private IssuingCompanyService issuingCompanyService;
 	
 	public MapTickerService(IssuingCompanyService ics) {
 		this.issuingCompanyService = ics;
 	}
-	
-	
-
 	@Override
 	public Ticker save(Ticker t) {
 		/*
@@ -34,28 +33,5 @@ public class MapTickerService extends BaseMapService<Ticker> implements TickerSe
 		}
 		return super.save(t);
 	}
-
-
-
-	@Override
-	public Ticker getInstanceFor(String targetTicker, IssuingCompany co, Exchange ex) {
-		Optional<Ticker> potentialTicker = this.map.values()
-				.stream()
-				.filter(t -> targetTicker.equals(t.getSymbol()))
-				.findAny();
-		if (potentialTicker.isPresent()) {
-			return potentialTicker.get();
-		} else {
-			Ticker t = new Ticker();
-			t.setSymbol(targetTicker);
-			t.setIssuingCompany(co);
-			t.setExchange(ex);
-			this.save(t);
-			return t;
-		}
-	}
-
-	
-
 
 }
