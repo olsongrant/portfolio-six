@@ -5,6 +5,7 @@ import java.util.Set;
 
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.formulafund.portfolio.data.model.Account;
 import com.formulafund.portfolio.data.model.Exchange;
@@ -55,6 +56,7 @@ public class InsertSampleData implements CommandLineRunner {
 		}
 	}
 
+	@Transactional
 	protected void insertSampleInfo() {
 		System.out.println("InsertSampleData::run");
 		User grant = new User();
