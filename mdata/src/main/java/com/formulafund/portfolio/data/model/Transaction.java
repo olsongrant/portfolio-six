@@ -9,7 +9,14 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
+
 @Entity
+@Getter
+@Setter
+@Slf4j
 public class Transaction extends BaseEntity {
 	private static final long serialVersionUID = 1L;
 	
@@ -17,38 +24,8 @@ public class Transaction extends BaseEntity {
 	private Ticker ticker;
 	private Float shareQuantity;
 	private LocalDateTime transactionDateTime;
-	public Ticker getTicker() {
-		return ticker;
-	}
-	public void setTicker(Ticker ticker) {
-		this.ticker = ticker;
-	}
-	public Float getShareQuantity() {
-		return shareQuantity;
-	}
-	public void setShareQuantity(Float shareQuantity) {
-		this.shareQuantity = shareQuantity;
-	}
-	public LocalDateTime getTransactionDateTime() {
-		return transactionDateTime;
-	}
-	public void setTransactionDateTime(LocalDateTime transactionDateTime) {
-		this.transactionDateTime = transactionDateTime;
-	}
-	public Portfolio getPortfolio() {
-		return portfolio;
-	}
-	public void setPortfolio(Portfolio portfolio) {
-		this.portfolio = portfolio;
-	}
-	public TransactionType getTransactionType() {
-		return transactionType;
-	}
-	public void setTransactionType(TransactionType transactionType) {
-		this.transactionType = transactionType;
-	}
 	
-    @ManyToOne
+	@ManyToOne
     @JoinColumn(name = "portfolio_id")
 	private Portfolio portfolio;
     

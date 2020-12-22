@@ -10,7 +10,14 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
+
 @Entity
+@Getter
+@Setter
+@Slf4j
 public class Portfolio extends BaseEntity {
 	/**
 	 * 
@@ -24,39 +31,6 @@ public class Portfolio extends BaseEntity {
 	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "portfolio")
 	private Set<Transaction> transactions = new HashSet<>();
-	
-	
-	public Set<Transaction> getTransactions() {
-		return transactions;
-	}
-
-	public void setTransactions(Set<Transaction> transactions) {
-		this.transactions = transactions;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public Account getAccount() {
-		return account;
-	}
-
-	public void setAccount(Account account) {
-		this.account = account;
-	}
-
-	public Set<StockHolding> getHoldings() {
-		return holdings;
-	}
-
-	public void setHoldings(Set<StockHolding> holdings) {
-		this.holdings = holdings;
-	}
 
 	@Transient
 	private transient Set<StockHolding> holdings = new HashSet<>();

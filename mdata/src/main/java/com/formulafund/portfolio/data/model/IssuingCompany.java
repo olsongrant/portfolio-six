@@ -7,7 +7,14 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
+
 @Entity
+@Getter
+@Setter
+@Slf4j
 public class IssuingCompany extends BaseEntity {
 	/**
 	 * 
@@ -17,22 +24,6 @@ public class IssuingCompany extends BaseEntity {
 	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "issuingCompany")
 	private Set<Ticker> tickers = new HashSet<>();
-
-	public Set<Ticker> getTickers() {
-		return tickers;
-	}
-
-	public void setTickers(Set<Ticker> tickers) {
-		this.tickers = tickers;
-	}
-
-	public String getFullName() {
-		return fullName;
-	}
-
-	public void setFullName(String fullName) {
-		this.fullName = fullName;
-	}
 
 	@Override
 	public String toString() {

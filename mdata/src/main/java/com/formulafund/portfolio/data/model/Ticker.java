@@ -9,9 +9,17 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
+
 @Entity
 @Table(name = "ticker")
+@Getter
+@Setter
+@Slf4j
 public class Ticker extends BaseEntity {
+
 	/**
 	 * 
 	 */
@@ -27,26 +35,6 @@ public class Ticker extends BaseEntity {
 	@Enumerated(EnumType.STRING)
 	private Exchange exchange;
 	
-	public Exchange getExchange() {
-		return exchange;
-	}
-	public void setExchange(Exchange exchange) {
-		this.exchange = exchange;
-	}
-
-	public IssuingCompany getIssuingCompany() {
-		return issuingCompany;
-	}
-	public void setIssuingCompany(IssuingCompany issuingCompany) {
-		this.issuingCompany = issuingCompany;
-	}
-	
-	public String getSymbol() {
-		return symbol;
-	}
-	public void setSymbol(String symbol) {
-		this.symbol = symbol;
-	}
 	@Override
 	public String toString() {
 		return "Ticker [issuingCompany=" + issuingCompany + ", symbol=" + symbol + ", exchange=" + exchange + ", id="

@@ -9,7 +9,15 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
+import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
+
 @Entity
+@Getter
+@Setter
+@Slf4j
 public class Account extends BaseEntity {
 	@Override
 	public String toString() {
@@ -24,26 +32,7 @@ public class Account extends BaseEntity {
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "account")
 	private Set<Portfolio> portfolios = new HashSet<>();
 	
-	public Set<Portfolio> getPortfolios() {
-		return portfolios;
-	}
-	public void setPortfolios(Set<Portfolio> portfolios) {
-		this.portfolios = portfolios;
-	}
-	
 
-	public User getUser() {
-		return user;
-	}
-	public void setUser(User user) {
-		this.user = user;
-	}
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
 	/**
 	 * 
 	 */
