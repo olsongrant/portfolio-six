@@ -29,7 +29,7 @@
 		<module>mweb</module>
 		<module>mdata</module>
 	</modules>
-	<dependencyManagement>
+<!-- 	<dependencyManagement>
 		<dependencies>
 			<dependency>
 				<groupId>com.formulafund</groupId>
@@ -37,7 +37,7 @@
 				<version>${project.version}</version>
 			</dependency>
 		</dependencies>
-	</dependencyManagement>
+	</dependencyManagement> -->
 	<build>
 		<plugins>
 			<plugin>
