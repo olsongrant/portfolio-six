@@ -10,7 +10,6 @@
 	<artifactId>mweb</artifactId>
 	<name>mweb</name>
 	<description>Portfolio Simulator Web</description>
-	<packaging>pom</packaging>
 
 	<properties>
 		<java.version>11</java.version>
