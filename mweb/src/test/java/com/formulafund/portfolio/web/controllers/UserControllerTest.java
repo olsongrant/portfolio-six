@@ -16,6 +16,7 @@ import org.springframework.ui.Model;
 import com.formulafund.portfolio.data.model.Account;
 import com.formulafund.portfolio.data.model.User;
 import com.formulafund.portfolio.data.services.AccountService;
+import com.formulafund.portfolio.data.services.UserService;
 
 class UserControllerTest {
 	@Mock
@@ -27,11 +28,14 @@ class UserControllerTest {
 	
 	@Mock
 	AccountService accountService;
+	
+	@Mock
+	UserService userService;
 
 	@BeforeEach
 	void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-		controller = new UserController(this.accountService);
+		controller = new UserController(this.accountService, this.userService);
 	}
 
 	@AfterEach
@@ -41,7 +45,7 @@ class UserControllerTest {
 	@Test
 	void testGetIndex() {
 		Account etfAccount = Account.with("ETFs All The Way", kirk);
-		Account preferreds = Account.with("Preferreds are Preferre", kirk);
+		Account preferreds = Account.with("Preferreds are Preferred", kirk);
 		Set<Account> accounts = new HashSet<>();
 		accounts.add(etfAccount);
 		accounts.add(preferreds);

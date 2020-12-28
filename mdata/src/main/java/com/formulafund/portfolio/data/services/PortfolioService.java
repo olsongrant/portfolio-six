@@ -76,6 +76,24 @@ public interface PortfolioService extends CrudService<Portfolio> {
 		} catch (Exception e) {
 			return holdingViews;
 		}
+		return populateHoldingsViewForPortfolio(holdingViews, portfolio);
+	}
+	
+	public default Set<HoldingView> getHoldingsView(Long accountId) {
+		TreeSet<HoldingView> holdingViews = new TreeSet<>();
+		Optional<Portfolio> optional = this.findPortfolioByAccountId(accountId);
+		Portfolio portfolio = null;
+		try {
+			portfolio = optional.orElseThrow();
+		} catch (Exception e) {
+			return holdingViews;
+		}
+		return populateHoldingsViewForPortfolio(holdingViews, portfolio);
+	}
+	
+	
+	public default Set<HoldingView> populateHoldingsViewForPortfolio(TreeSet<HoldingView> holdingViews,
+			Portfolio portfolio) {
 		Account account = portfolio.getAccount();
 		User user = account.getUser();
 		HoldingView aView = new HoldingView();
@@ -100,6 +118,13 @@ public interface PortfolioService extends CrudService<Portfolio> {
 			holdingViews.add(aView);
 			return holdingViews;
 		}
+	}
+	
+	public default Optional<Portfolio> findPortfolioByAccountId(Long idLong) {
+		if (idLong == null) throw new RuntimeException("null parameter sent in to MapPortfolioService::findPortfolioByAccountId");
+		Optional<Portfolio> potentialPortfolio = this.findAll()
+				.stream().filter(p -> idLong.equals(p.getAccount().getId())).findAny();
+		return potentialPortfolio;		
 	}
 
 	public default Optional<Portfolio> findPortfolioByName(String aName) {

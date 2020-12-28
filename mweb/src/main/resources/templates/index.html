@@ -12,10 +12,12 @@
     <tr>
         <th style="width: 120px;">Full Name</th>
         <th style="width: 80px;">Handle</th>
+        <th style="width: 40px;">View</th>
     </tr>
     <tr th:each="user : ${userSet}">
         <td th:text="${user.fullName}">123</td>
         <td th:text="${user.handle}">myHandle</td>
+        <td><a href="#" th:href="@{'/user/' + ${user.id} + '/show'}">View</a></td>
     </tr>
 </table>
 
