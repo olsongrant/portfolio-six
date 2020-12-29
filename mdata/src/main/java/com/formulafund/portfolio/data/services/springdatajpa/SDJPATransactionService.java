@@ -7,7 +7,6 @@ import java.util.stream.StreamSupport;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
-import com.formulafund.portfolio.data.model.Portfolio;
 import com.formulafund.portfolio.data.model.Transaction;
 import com.formulafund.portfolio.data.repositories.TransactionRepository;
 import com.formulafund.portfolio.data.services.TransactionService;

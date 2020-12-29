@@ -11,15 +11,15 @@ public interface TransactionService extends CrudService<Transaction> {
 	
 //	public Set<Transaction> purchasesForPortfolio(Portfolio aPortfolio); 
 	
-	public default Float getCurrentHoldingOf(Ticker aTicker, Portfolio aPortfolio) {
-		Set<Transaction> relatedTransactions = this.transactionsFor(aPortfolio, aTicker);
+	public default Float getCurrentHoldingOf(Ticker aTicker, Account anAccount) {
+		Set<Transaction> relatedTransactions = this.transactionsFor(anAccount, aTicker);
 		Float netQuantity = relatedTransactions.stream()
 				.reduce(Float.valueOf(0), TransactionService::addTransactionToExisting, (a, b) -> a + b);
 		return netQuantity;
 	}
 	
-	public default Set<Transaction> transactionsFor(Portfolio aPortfolio, Ticker aTicker) {
-		Set<Transaction> allTransactions = this.allTransactionsForPortfolio(aPortfolio);
+	public default Set<Transaction> transactionsFor(Account anAccount, Ticker aTicker) {
+		Set<Transaction> allTransactions = this.allTransactionsForAccount(anAccount);
 		Set<Transaction> setForTicker = allTransactions
 				.stream()
 				.filter(txn -> aTicker.equals(txn.getTicker()))
@@ -43,10 +43,10 @@ public interface TransactionService extends CrudService<Transaction> {
 			.collect(Collectors.toSet());
 	}
 
-	public default Set<Transaction> allPurchasesForPortfolio(Portfolio aPortfolio) {
+	public default Set<Transaction> allPurchasesForPortfolio(Account anAccount) {
 		Set<Transaction> purchases = this.allPurchases()
 				.stream()
-				.filter(p -> aPortfolio.equals(p.getPortfolio()))
+				.filter(p -> anAccount.equals(p.getAccount()))
 				.collect(Collectors.toSet());
 		return purchases;
 	}
@@ -58,42 +58,42 @@ public interface TransactionService extends CrudService<Transaction> {
 				.collect(Collectors.toSet());
 	}
 	
-	public default Set<Transaction> allTransactionsForPortfolio(Portfolio aPortfolio) {
+	public default Set<Transaction> allTransactionsForAccount(Account anAccount) {
 		return this.findAll()
 				.stream()
-				.filter(t -> aPortfolio.equals(t.getPortfolio()))
+				.filter(t -> anAccount.equals(t.getAccount()))
 				.collect(Collectors.toSet());
 	}
 
-	public default Set<Transaction> allSalesForPortfolio(Portfolio aPortfolio) {
+	public default Set<Transaction> allSalesForAccount(Account anAccount) {
 		Set<Transaction> salesForPortfolio = this.allSales()
 			.stream()
-			.filter(s -> aPortfolio.equals(s.getPortfolio()))
+			.filter(s -> anAccount.equals(s.getAccount()))
 			.collect(Collectors.toSet());
 		return salesForPortfolio;
 	}
 	
-	public default Set<Ticker> uniqueTickersForPortfolio(Portfolio aPortfolio) {
-		Set<Transaction> allPurchases = this.allPurchasesForPortfolio(aPortfolio);
+	public default Set<Ticker> uniqueTickersForAccount(Account anAccount) {
+		Set<Transaction> allPurchases = this.allPurchasesForPortfolio(anAccount);
 		HashSet<Ticker> tickerSet = new HashSet<>();
 		allPurchases.forEach(sp -> tickerSet.add(sp.getTicker()));
 		return tickerSet;
 	}
 	
-	public default Set<Transaction> salesForPortfolio(Portfolio aPortfolio) {
+	public default Set<Transaction> salesForAccount(Account anAccount) {
 		Set<Transaction> sales = this.findAll()
 			.stream()
-			.filter(sp -> aPortfolio.equals(sp.getPortfolio()))
+			.filter(sp -> anAccount.equals(sp.getAccount()))
 			.filter(t -> TransactionType.SALE.equals(t.getTransactionType()))
 			.collect(Collectors.toSet());
 		return sales;
 	}
 
 
-	public default Set<Transaction> purchasesForPortfolio(Portfolio aPortfolio) {
+	public default Set<Transaction> purchasesForAccount(Account anAccount) {
 		Set<Transaction> purchases = this.findAll()
 				.stream()
-				.filter(n -> aPortfolio.equals(n.getPortfolio()))
+				.filter(n -> anAccount.equals(n.getAccount()))
 				.filter(t -> TransactionType.PURCHASE.equals(t.getTransactionType()))
 				.collect(Collectors.toSet());
 		return purchases;

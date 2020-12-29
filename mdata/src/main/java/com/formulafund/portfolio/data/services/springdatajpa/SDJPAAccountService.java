@@ -7,16 +7,21 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import com.formulafund.portfolio.data.model.Account;
+import com.formulafund.portfolio.data.model.StockHolding;
+import com.formulafund.portfolio.data.model.Ticker;
 import com.formulafund.portfolio.data.repositories.AccountRepository;
 import com.formulafund.portfolio.data.services.AccountService;
+import com.formulafund.portfolio.data.services.TransactionService;
 
 @Service
 @Profile("springdatajpa")
 public class SDJPAAccountService implements AccountService {
 	private AccountRepository accountRepository;
+	private TransactionService transactionService;
 	
-	public SDJPAAccountService(AccountRepository aRepository) {
+	public SDJPAAccountService(AccountRepository aRepository, TransactionService tService) {
 		this.accountRepository = aRepository;
+		this.transactionService = tService;
 	}
 
 	@Override
@@ -44,6 +49,23 @@ public class SDJPAAccountService implements AccountService {
 	@Override
 	public void deleteById(Long id) {
 		this.deleteById(id);
+	}
+	
+	@Override
+	public Float getCurrentHoldingOf(Ticker aTicker, Account anAccount) {
+		return AccountService.getCurrentHoldingOf(this.transactionService, aTicker, anAccount);
+	}
+
+
+	@Override
+	public Set<StockHolding> getCurrentHoldings(Account anAccount) {	
+		return this.getCurrentHoldings(this.transactionService, anAccount);
+	}
+
+
+	@Override
+	public Float sellAndReportRemaining(Ticker aTicker, Float quantity, Account anAccount) {
+		return this.sellAndReportRemaining(this.transactionService, aTicker, quantity, anAccount);
 	}
 
 }

@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 
 import lombok.Data;
 import lombok.Getter;
@@ -23,14 +24,22 @@ public class Account extends BaseEntity {
 	public String toString() {
 		return "Account [name=" + name + ", user=" + user + ", id=" + id + "]";
 	}
-	private String name;
+	private String name; 
+	private Float originalCash;
+	private Float currentCash;
 	
     @ManyToOne
     @JoinColumn(name = "user_id")	
 	private User user;
-	
+    
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "account")
-	private Set<Portfolio> portfolios = new HashSet<>();
+	private Set<Transaction> transactions = new HashSet<>();
+
+	@Transient
+	private transient Set<StockHolding> holdings = new HashSet<>();
+	
+//	@OneToMany(cascade = CascadeType.ALL, mappedBy = "account")
+//	private Set<Portfolio> portfolios = new HashSet<>();
 	
 
 	/**
