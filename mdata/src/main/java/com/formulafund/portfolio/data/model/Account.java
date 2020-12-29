@@ -51,6 +51,8 @@ public class Account extends BaseEntity {
 		Account a = new Account();
 		a.setName(aName);
 		a.setUser(aUser);
+		a.setOriginalCash(100000.0f);
+		a.setCurrentCash(100000.0f);
 		return a;
 	}
 

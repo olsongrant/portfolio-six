@@ -2,24 +2,39 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'user')}">
 <head>
     <meta charset="UTF-8"/>
-    <title>User Landing</title>
+    <title>Account Landing</title>
 </head>
 <body>
-<h1>Portfolio Landing Page</h1>
-<h2>Holdings List</h2>
+
+<table id="accountAttributes" class="table">
+	<caption th:text="${account.name}">Account Attributes</caption>
+<!-- <tr>
+		<th style="width: 50px;"/>
+		<th style="width: 50px;"/>
+	</tr> -->
+	<tr>
+		<td>User:</td>
+		<td th:text="${user.fullName}">User Name</td>
+	</tr>
+	<tr>
+		<td>Original Cash:</td>
+		<td th:text="${ '$' + #numbers.formatDecimal(account.originalCash, 1, 2)}">$1.00</td>
+	</tr>
+	<tr>
+		<td>Current Cash:</td>
+		<td th:text="${ '$' + #numbers.formatDecimal(account.currentCash, 1, 2)}">$1.00</td>
+	</tr>
+</dl>
+
+
 <table id="holdingViews" class="table">
+<caption>Holdings List</caption>
     <tr>
-        <th style="width: 100px;">Account Name</th>
-        <th style="width: 100px;">User Name</th>
-        <th style="width: 100px;">Portfolio Name</th>
         <th style="width: 100px;">Ticker Symbol</th>
         <th style="width: 100px;">Share Quantity</th>
         <th style="width: 100px;">Issuing Company</th>
     </tr>
     <tr th:each="holding : ${holdingSet}">
-        <td th:text="${holding.accountName}">123</td>
-        <td th:text="${holding.userName}">handle</td>
-        <td th:text="${holding.portfolioName}">myPortfolio</td>
         <td th:text="${holding.tickerSymbol}">NULL</td>
         <td th:text="${holding.shareQuantity}">99.99</td>
         <td th:text="${holding.companyName}">Olsonsoft</td>

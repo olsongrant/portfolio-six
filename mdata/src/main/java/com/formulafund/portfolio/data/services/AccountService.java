@@ -14,9 +14,7 @@ import com.formulafund.portfolio.data.model.User;
 import com.formulafund.portfolio.data.view.HoldingView;
 
 public interface AccountService extends CrudService<Account> {
-//	Account findById(Long anId);
-//	Account save(Account acct);
-//	Set<Account> findAl	l();
+
 	Float getCurrentHoldingOf(Ticker aTicker, Account anAccount);
 	Set<StockHolding> getCurrentHoldings(Account anAccount);
 	Float sellAndReportRemaining(Ticker aTicker, Float quantity, Account anAccount);
@@ -94,7 +92,6 @@ public interface AccountService extends CrudService<Account> {
 		HoldingView aView = new HoldingView();
 		aView.setAccountName(account.getName());
 		aView.setUserName(user.getFullName());
-		aView.setPortfolioName(account.getName());
 		Set<StockHolding> holdingSet = this.getCurrentHoldings(account);
 		for (StockHolding h: holdingSet) {
 			HoldingView hv = aView.deepCopy();

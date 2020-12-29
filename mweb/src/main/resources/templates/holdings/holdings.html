@@ -11,7 +11,6 @@
     <tr>
         <th style="width: 100px;">Account Name</th>
         <th style="width: 100px;">User Name</th>
-        <th style="width: 100px;">Portfolio Name</th>
         <th style="width: 100px;">Ticker Symbol</th>
         <th style="width: 100px;">Share Quantity</th>
         <th style="width: 100px;">Issuing Company</th>
@@ -19,7 +18,6 @@
     <tr th:each="holding : ${holdingSet}">
         <td th:text="${holding.accountName}">123</td>
         <td th:text="${holding.userName}">handle</td>
-        <td th:text="${holding.portfolioName}">myPortfolio</td>
         <td th:text="${holding.tickerSymbol}">NULL</td>
         <td th:text="${holding.shareQuantity}">99.99</td>
         <td th:text="${holding.companyName}">Olsonsoft</td>
