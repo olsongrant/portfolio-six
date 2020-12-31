@@ -24,6 +24,8 @@ public class Transaction extends BaseEntity {
 	private Ticker ticker;
 	private Float shareQuantity;
 	private LocalDateTime transactionDateTime;
+	private Float sharePrice;
+
 	
 	@ManyToOne
     @JoinColumn(name = "account_id")

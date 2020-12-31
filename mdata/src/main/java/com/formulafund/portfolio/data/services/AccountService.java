@@ -6,6 +6,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
+import com.formulafund.portfolio.data.commands.BuyCommand;
 import com.formulafund.portfolio.data.model.Account;
 import com.formulafund.portfolio.data.model.StockHolding;
 import com.formulafund.portfolio.data.model.Ticker;
@@ -18,6 +19,7 @@ public interface AccountService extends CrudService<Account> {
 	Float getCurrentHoldingOf(Ticker aTicker, Account anAccount);
 	Set<StockHolding> getCurrentHoldings(Account anAccount);
 	Float sellAndReportRemaining(Ticker aTicker, Float quantity, Account anAccount);
+	Float buyAndReportRemainingCash(BuyCommand aBuyCommand);
 	
 	public default StockHolding stockHoldingFor(Ticker aTicker, Account anAccount) {
 		Float quantity = this.getCurrentHoldingOf(aTicker, anAccount);
@@ -42,13 +44,25 @@ public interface AccountService extends CrudService<Account> {
 		return holdings;
 	}
 	
-	public default Float sellAndReportRemaining(TransactionService txnService, Ticker aTicker, Float quantity, Account anAccount) {
+	public default Float sellAndReportRemaining(TransactionService txnService, 
+												PriceService aPriceService,
+												AccountService anAccountService,
+												Ticker aTicker, 
+												Float quantity, 
+												Account anAccount) {
 		if (quantity <= 0.0f) {
 			throw new IllegalArgumentException("sale quantity must be greater than 0");
 		}
 		Float quantityOnHand = this.getCurrentHoldingOf(aTicker, anAccount);
 		if (quantityOnHand >= quantity) {
+			Float sharePrice = aPriceService.sharePriceForTicker(aTicker);
+			Float cash = aPriceService.balanceAfterCredit(quantity, 
+														  anAccount.getCurrentCash(), 
+														  sharePrice);
+			anAccount.setCurrentCash(cash);
+			anAccountService.save(anAccount);
 			Transaction aSale = Transaction.saleOf(aTicker, LocalDateTime.now(), anAccount, quantity);
+			aSale.setSharePrice(sharePrice);
 			txnService.save(aSale);
 			return quantityOnHand - quantity;
 		} else {
@@ -57,6 +71,29 @@ public interface AccountService extends CrudService<Account> {
 					quantity + " shares.");
 			
 		}
+	}
+	
+	public default Float buyAndReportRemainingCash(TransactionService txnService, PriceService aPriceService,
+			AccountService anAccountService, Ticker aTicker, Float quantity, Account anAccount) {
+		if (quantity <= 0.0f) {
+			throw new IllegalArgumentException("purchase quantity must be greater than 0");
+		}
+		Transaction aPurchase = Transaction.purchaseOf(aTicker, LocalDateTime.now(), anAccount, quantity);
+		Float sharePrice = aPriceService.sharePriceForTicker(aTicker);
+		aPurchase.setSharePrice(sharePrice);
+		Float cash = aPriceService.balanceAfterDeduction(quantity, 
+														 anAccount.getCurrentCash(), 
+														 sharePrice);
+		if (cash < 0.0f) {
+			throw new InsufficientFundsException("inadequate amount of cash to buy this item.");
+		}
+			
+		anAccount.setCurrentCash(cash);
+		anAccountService.save(anAccount);
+
+		txnService.save(aPurchase);
+		return cash;
+
 	}
 	
 	public default Set<HoldingView> getHoldingsView(String aName) {

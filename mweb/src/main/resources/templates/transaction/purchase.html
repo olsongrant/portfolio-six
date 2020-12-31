@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'user')}">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Account Landing</title>
+</head>
+<body>
+
+<table id="accountAttributes" class="table">
+	<caption th:text="${(account.name) + ' Account Attributes'}">Account Attributes</caption>
+<!-- <tr>
+		<th style="width: 50px;"/>
+		<th style="width: 50px;"/>
+	</tr> -->
+	<tr>
+		<td>User:</td>
+		<td th:text="${user.fullName}">User Name</td>
+	</tr>
+	<tr>
+		<td>Original Cash:</td>
+		<td th:text="${ '$' + #numbers.formatDecimal(account.originalCash, 1, 2)}">$1.00</td>
+	</tr>
+	<tr>
+		<td>Current Cash:</td>
+		<td th:text="${ '$' + #numbers.formatDecimal(account.currentCash, 1, 2)}">$1.00</td>
+	</tr>
+</table>
+<a href="#" th:href="@{'/holdings/' + ${account.id} + '/buy'}">Make Purchase</a>
+<table id="holdingViews" class="table">
+<caption>Holdings List</caption>
+    <tr>
+        <th style="width: 100px;">Ticker Symbol</th>
+        <th style="width: 100px;">Share Quantity</th>
+        <th style="width: 100px;">Issuing Company</th>
+    </tr>
+    <tr th:each="holding : ${holdingSet}">
+        <td th:text="${holding.tickerSymbol}">NULL</td>
+        <td th:text="${holding.shareQuantity}">99.99</td>
+        <td th:text="${holding.companyName}">Olsonsoft</td>
+    </tr>
+</table>
+<div class="container-fluid" style="margin-top: 20px">
+    <div class="row">
+        <div class="col-md-6 col-md-offset-3">
+            <form  th:object="${buy}" th:action="@{/purchase/}" method="post">
+                <input type="hidden" th:field="*{accountId}"/>
+                <div class="panel-group">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <h1 class="panel-title">Make Purchase</h1>
+                        </div>
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-md-3 form-group">
+                                    <label>Ticker Symbol:</label>
+                                    <input type="text" class="form-control" th:field="*{symbol}"/>
+                                </div>
+                                <div class="col-md-3 form-group">
+                                    <label>Share Quantity:</label>
+                                    <input type="text" class="form-control" th:field="*{shareQuantity}"/>
+                                </div>
+                            </div>
+						</div>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -7,7 +7,7 @@
 <body>
 
 <table id="accountAttributes" class="table">
-	<caption th:text="${account.name}">Account Attributes</caption>
+	<caption th:text="${(account.name) + ' Account Attributes'}">Account Attributes</caption>
 <!-- <tr>
 		<th style="width: 50px;"/>
 		<th style="width: 50px;"/>
@@ -24,9 +24,8 @@
 		<td>Current Cash:</td>
 		<td th:text="${ '$' + #numbers.formatDecimal(account.currentCash, 1, 2)}">$1.00</td>
 	</tr>
-</dl>
-
-
+</table>
+<a href="#" th:href="@{'/holdings/' + ${account.id} + '/buy'}">Make Purchase</a>
 <table id="holdingViews" class="table">
 <caption>Holdings List</caption>
     <tr>

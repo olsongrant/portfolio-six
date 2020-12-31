@@ -6,11 +6,14 @@ import java.util.Set;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
+import com.formulafund.portfolio.data.commands.BuyCommand;
 import com.formulafund.portfolio.data.model.Account;
 import com.formulafund.portfolio.data.model.StockHolding;
 import com.formulafund.portfolio.data.model.Ticker;
 import com.formulafund.portfolio.data.repositories.AccountRepository;
 import com.formulafund.portfolio.data.services.AccountService;
+import com.formulafund.portfolio.data.services.PriceService;
+import com.formulafund.portfolio.data.services.TickerService;
 import com.formulafund.portfolio.data.services.TransactionService;
 
 @Service
@@ -18,10 +21,17 @@ import com.formulafund.portfolio.data.services.TransactionService;
 public class SDJPAAccountService implements AccountService {
 	private AccountRepository accountRepository;
 	private TransactionService transactionService;
+	private PriceService priceService;
+	private TickerService tickerService;
 	
-	public SDJPAAccountService(AccountRepository aRepository, TransactionService tService) {
+	public SDJPAAccountService(AccountRepository aRepository, 
+							   TransactionService tService,
+							   PriceService aPriceService,
+							   TickerService aTickerService) {
 		this.accountRepository = aRepository;
 		this.transactionService = tService;
+		this.priceService = aPriceService;
+		this.tickerService = aTickerService;
 	}
 
 	@Override
@@ -65,7 +75,25 @@ public class SDJPAAccountService implements AccountService {
 
 	@Override
 	public Float sellAndReportRemaining(Ticker aTicker, Float quantity, Account anAccount) {
-		return this.sellAndReportRemaining(this.transactionService, aTicker, quantity, anAccount);
+		return this.sellAndReportRemaining(this.transactionService, 
+										   this.priceService,
+										   this,
+										   aTicker, 
+										   quantity, 
+										   anAccount);
+	}
+
+	@Override
+	public Float buyAndReportRemainingCash(BuyCommand aBuyCommand) {
+		Long idLong = Long.valueOf(aBuyCommand.getAccountId());
+		Account account = this.findById(idLong);
+		Ticker ticker = this.tickerService.findTickerBySymbol(aBuyCommand.getSymbol()).orElseThrow();
+		return this.buyAndReportRemainingCash(this.transactionService, 
+											  this.priceService, 
+											  this, 
+											  ticker, 
+											  aBuyCommand.getShareQuantity(), 
+											  account);
 	}
 
 }
