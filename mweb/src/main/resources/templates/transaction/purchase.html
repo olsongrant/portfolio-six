@@ -53,7 +53,14 @@
                             <div class="row">
                                 <div class="col-md-3 form-group">
                                     <label>Ticker Symbol:</label>
-                                    <input type="text" class="form-control" th:field="*{symbol}"/>
+                                <!--     <input type="text" class="form-control" th:field="*{symbol}"/> -->
+                                	<select id="symbol" th:field="*{symbol}">
+									  <option value="MSFT">MSFT</option>
+									  <option value="GOOG">GOOG</option>
+									  <option value="BRKB">BRKB</option>
+									  <option value="IBM">IBM</option>
+									  <option value="NFLX">NFLX</option>
+									</select>
                                 </div>
                                 <div class="col-md-3 form-group">
                                     <label>Share Quantity:</label>
