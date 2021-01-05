@@ -2,10 +2,14 @@ package com.formulafund.portfolio.web.controllers;
 
 import java.util.Set;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.formulafund.portfolio.data.model.Account;
 import com.formulafund.portfolio.data.model.User;
@@ -39,11 +43,14 @@ public class UserController {
 	}
 	
 	@RequestMapping("/user/{id}/show")
-	public String showAccountsForUser(@PathVariable String id, Model model) {
+	public String showAccountsForUser(@PathVariable String id, Model model, HttpServletRequest request) {
 		System.out.println("show user " + id);
 		Long idLong = Long.valueOf(id);
 		User user = this.userService.findById(idLong);
 		model.addAttribute("user", user);
+		if ((request.getRemoteUser() != null) && (request.getRemoteUser().equals(user.getHandle()))) {
+			model.addAttribute("allowAdd", true);
+		}
 		Set<Account> accountSet = user.getAccounts();
 		model.addAttribute("accountSet", accountSet);
 		return "user/show";
@@ -61,5 +68,12 @@ public class UserController {
 		model.addAttribute("addaccount", command);
 		return "user/accountadd";
 	}
+	
+	@RequestMapping(value="/logout",method = RequestMethod.GET)
+    public String logout(HttpServletRequest request){
+        HttpSession httpSession = request.getSession();
+        httpSession.invalidate();
+        return "redirect:/";
+    }
 	
 }

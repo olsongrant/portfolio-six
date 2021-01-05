@@ -2,6 +2,8 @@ package com.formulafund.portfolio.web.controllers;
 
 import java.util.Set;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -9,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.formulafund.portfolio.data.commands.BuyCommand;
 import com.formulafund.portfolio.data.model.Account;
+import com.formulafund.portfolio.data.model.User;
 import com.formulafund.portfolio.data.services.AccountService;
 import com.formulafund.portfolio.data.view.HoldingView;
 
@@ -31,10 +34,14 @@ public class HoldingsController {
 	}
 	
 	@RequestMapping("/holdings/{id}/show")
-	public String showAccountsForUser(@PathVariable String id, Model model) {
+	public String showAccountsForUser(@PathVariable String id, Model model, HttpServletRequest request) {
 		log.debug("show holdings for account " + id);
 		Long idLong = Long.valueOf(id);
 		Account account = this.accountService.findById(idLong);
+		User user = account.getUser();
+		if ((request.getRemoteUser() != null) && (request.getRemoteUser().equals(user.getHandle()))) {
+			model.addAttribute("allowAdd", true);
+		}
 		model.addAttribute("account", account);
 		model.addAttribute("user", account.getUser());
 		Set<HoldingView> holdingSet = this.accountService.getHoldingsView(idLong);

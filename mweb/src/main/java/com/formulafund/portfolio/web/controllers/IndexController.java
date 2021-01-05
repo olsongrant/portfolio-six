@@ -20,4 +20,9 @@ public class IndexController {
 		model.addAttribute("userSet", this.userService.findAll());
 		return "index";
 	}
+	
+	@RequestMapping({"/login", "login"})
+	public String getLogin() {
+		return "login";
+	}
 }

@@ -25,7 +25,7 @@
 		<td th:text="${ '$' + #numbers.formatDecimal(account.currentCash, 1, 2)}">$1.00</td>
 	</tr>
 </table>
-<a href="#" th:href="@{'/holdings/' + ${account.id} + '/buy'}">Make Purchase</a>
+
 <table id="holdingViews" class="table">
 <caption>Holdings List</caption>
     <tr>
@@ -39,6 +39,8 @@
         <td th:text="${holding.companyName}">Olsonsoft</td>
     </tr>
 </table>
-
+<div th:if="${allowAdd}">
+	<a href="#" th:href="@{'/holdings/' + ${account.id} + '/buy'}">Make Purchase</a>
+</div>
 </body>
 </html>

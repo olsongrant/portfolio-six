@@ -19,6 +19,9 @@
         <td><a href="#" th:href="@{'/holdings/' + ${account.id} + '/show'}">View</a></td>
     </tr>
 </table>
-<a href="#" th:href="@{'/user/' + ${user.id} + '/addaccount'}">Add Account</a>
+<div th:if="${allowAdd}">
+	<a href="#" th:href="@{'/user/' + ${user.id} + '/addaccount'}">Add Account</a>
+</div>
+
 </body>
 </html>
