@@ -9,7 +9,7 @@ import com.formulafund.portfolio.data.model.*;
 import java.util.*;
 
 @Component
-public class UserToUserCommand implements Converter<User, UserCommand> {
+public class UserToUserCommand implements Converter<ApplicationUser, UserCommand> {
 	
 	private AccountToAccountCommand accountConverter;
 	
@@ -18,7 +18,7 @@ public class UserToUserCommand implements Converter<User, UserCommand> {
 	}
 
 	@Override
-	public UserCommand convert(User source) {
+	public UserCommand convert(ApplicationUser source) {
 		if (source == null) return null;
 		UserCommand cmd = new UserCommand();
 		Set<Account> accounts = source.getAccounts();
@@ -27,7 +27,8 @@ public class UserToUserCommand implements Converter<User, UserCommand> {
 			accounts.forEach(a -> commands.add(this.accountConverter.convert(a)));
 			cmd.setAccountCommands(commands);
 		}
-		cmd.setFullName(source.getFullName());
+		cmd.setFirstName(source.getFirstName());
+		cmd.setLastName(source.getLastName());
 		cmd.setHandle(source.getHandle());
 		cmd.setId(source.getId());
 		return cmd;

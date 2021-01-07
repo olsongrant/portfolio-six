@@ -5,7 +5,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 
 import com.formulafund.portfolio.data.model.Account;
-import com.formulafund.portfolio.data.model.User;
+import com.formulafund.portfolio.data.model.ApplicationUser;
 import com.formulafund.portfolio.web.commands.AccountCommand;
 
 import lombok.Synchronized;
@@ -27,7 +27,7 @@ public class AccountCommandToAccount implements Converter<AccountCommand, Accoun
 		}
 		final Account account = new Account();
 		account.setName(source.getName());
-		User user = this.userCommandConverter.convert(source.getUserCommand());
+		ApplicationUser user = this.userCommandConverter.convert(source.getUserCommand());
 		account.setUser(user);
 		account.setId(source.getId());
 		return account;

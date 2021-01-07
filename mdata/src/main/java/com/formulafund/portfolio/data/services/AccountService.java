@@ -11,7 +11,7 @@ import com.formulafund.portfolio.data.model.Account;
 import com.formulafund.portfolio.data.model.StockHolding;
 import com.formulafund.portfolio.data.model.Ticker;
 import com.formulafund.portfolio.data.model.Transaction;
-import com.formulafund.portfolio.data.model.User;
+import com.formulafund.portfolio.data.model.ApplicationUser;
 import com.formulafund.portfolio.data.view.HoldingView;
 
 public interface AccountService extends CrudService<Account> {
@@ -125,10 +125,10 @@ public interface AccountService extends CrudService<Account> {
 	
 	public default Set<HoldingView> populateHoldingsViewForAccount(TreeSet<HoldingView> holdingViews,
 			Account account) {
-		User user = account.getUser();
+		ApplicationUser user = account.getUser();
 		HoldingView aView = new HoldingView();
 		aView.setAccountName(account.getName());
-		aView.setUserName(user.getFullName());
+		aView.setUserName(user.getFirstName().concat(" ").concat(user.getLastName()));
 		Set<StockHolding> holdingSet = this.getCurrentHoldings(account);
 		for (StockHolding h: holdingSet) {
 			HoldingView hv = aView.deepCopy();

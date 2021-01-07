@@ -30,7 +30,7 @@ public class Account extends BaseEntity {
 	
     @ManyToOne
     @JoinColumn(name = "user_id")	
-	private User user;
+	private ApplicationUser user;
     
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "account")
 	private Set<Transaction> transactions = new HashSet<>();
@@ -47,7 +47,7 @@ public class Account extends BaseEntity {
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	public static Account with(String aName, User aUser) {
+	public static Account with(String aName, ApplicationUser aUser) {
 		Account a = new Account();
 		a.setName(aName);
 		a.setUser(aUser);

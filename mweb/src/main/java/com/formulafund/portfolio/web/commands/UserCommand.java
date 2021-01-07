@@ -14,10 +14,11 @@ public class UserCommand {
     private Long id;
 	@Override
 	public String toString() {
-		return "UserCommand [id=" + id + ", fullName=" + fullName + ", handle=" + handle + "]";
+		return "UserCommand [id=" + id + ", fullName=" + firstName + " " + lastName + ", handle=" + handle + "]";
 	}
 
-	private String fullName;
+	private String firstName;
+	private String lastName;
 	private String handle;
 	
 	private Set<AccountCommand> accountCommands = new HashSet<>();

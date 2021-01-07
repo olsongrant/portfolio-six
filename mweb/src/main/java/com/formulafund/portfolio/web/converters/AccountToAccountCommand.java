@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 import com.formulafund.portfolio.data.model.Account;
 import com.formulafund.portfolio.data.model.Transaction;
-import com.formulafund.portfolio.data.model.User;
+import com.formulafund.portfolio.data.model.ApplicationUser;
 import com.formulafund.portfolio.web.commands.AccountCommand;
 import com.formulafund.portfolio.web.commands.*;
 
@@ -43,7 +43,7 @@ public class AccountToAccountCommand implements Converter<Account, AccountComman
 			transactions.forEach(t -> commands.add(this.transactionConverter.convert(t)));
 			cmd.setTransactionCommands(commands);
 		}
-		User user = source.getUser();
+		ApplicationUser user = source.getUser();
 		UserCommand uc = this.userConverter.convert(user);
 		cmd.setUserCommand(uc);
 		return cmd;

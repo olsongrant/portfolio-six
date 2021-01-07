@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.formulafund.portfolio.data.commands.BuyCommand;
 import com.formulafund.portfolio.data.model.Account;
-import com.formulafund.portfolio.data.model.User;
+import com.formulafund.portfolio.data.model.ApplicationUser;
 import com.formulafund.portfolio.data.services.AccountService;
 import com.formulafund.portfolio.data.view.HoldingView;
 
@@ -38,7 +38,7 @@ public class HoldingsController {
 		log.debug("show holdings for account " + id);
 		Long idLong = Long.valueOf(id);
 		Account account = this.accountService.findById(idLong);
-		User user = account.getUser();
+		ApplicationUser user = account.getUser();
 		if ((request.getRemoteUser() != null) && (request.getRemoteUser().equals(user.getHandle()))) {
 			model.addAttribute("allowAdd", true);
 		}

@@ -16,7 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import com.formulafund.portfolio.data.model.User;
+import com.formulafund.portfolio.data.model.ApplicationUser;
 import com.formulafund.portfolio.data.services.UserService;
 
 import java.util.*;
@@ -38,17 +38,17 @@ class IndexControllerTest {
     @InjectMocks
     IndexController controller;
 
-    Set<User> users;
+    Set<ApplicationUser> users;
 
     MockMvc mockMvc;	
 
 	@BeforeEach
 	void setUp() throws Exception {
         this.users = new HashSet<>();
-        User bugs = User.with("Bugs Bunny", "bugs");
+        ApplicationUser bugs = ApplicationUser.with("Bugs", "Bunny", "bugs");
  //       this.userService.save(bugs);
         this.users.add(bugs);
-        User yosemite = User.with("Yosemite Sam", "sam");
+        ApplicationUser yosemite = ApplicationUser.with("Yosemite", "Sam", "sam");
         this.users.add(yosemite);
 
         this.mockMvc = MockMvcBuilders

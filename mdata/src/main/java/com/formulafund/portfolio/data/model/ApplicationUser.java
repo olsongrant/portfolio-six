@@ -18,29 +18,38 @@ import java.util.HashSet;
 @Getter
 @Setter
 @Slf4j
-public class User extends BaseEntity {
+public class ApplicationUser extends BaseEntity {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private String fullName;
+	private String firstName;
+	private String lastName;
+	private String emailAddress;
 	private String handle;
+	private String password;
 	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
 	private Set<Account> accounts = new HashSet<>();
 	
-	public static User with(String nameString, String handle) {
+	public static ApplicationUser with(String fName, String surname, String handle) {
 		log.debug("in User::of");
-		User u = new User();
-		u.setFullName(nameString);
+		ApplicationUser u = new ApplicationUser();
+		u.setFirstName(fName);
+		u.setLastName(surname);
 		u.setHandle(handle);
 		return u;
 	}
+	
+	public String getFullName() {
+		return (this.getFirstName() + " " + this.getLastName());
+	}
+	
 	@Override
 	public String toString() {
 		log.debug("in User::toString");
-		return "User [fullName=" + fullName + ", handle=" + handle + ", id=" + id + "]";
+		return "User [fullName=" + firstName + ", handle=" + handle + ", id=" + id + "]";
 	}
 	
 	

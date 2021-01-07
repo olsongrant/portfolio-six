@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.formulafund.portfolio.data.model.Transaction;
-import com.formulafund.portfolio.data.model.User;
+import com.formulafund.portfolio.data.model.ApplicationUser;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

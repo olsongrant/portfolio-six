@@ -9,14 +9,14 @@ import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 
 import com.formulafund.portfolio.data.model.Account;
-import com.formulafund.portfolio.data.model.User;
+import com.formulafund.portfolio.data.model.ApplicationUser;
 import com.formulafund.portfolio.web.commands.AccountCommand;
 import com.formulafund.portfolio.web.commands.UserCommand;
 
 import lombok.Synchronized;
 
 @Component
-public class UserCommandToUser implements Converter<UserCommand, User> {
+public class UserCommandToUser implements Converter<UserCommand, ApplicationUser> {
 	
 	private AccountCommandToAccount accountCommandConverter;
 	
@@ -27,10 +27,11 @@ public class UserCommandToUser implements Converter<UserCommand, User> {
 	@Synchronized
 	@Nullable
 	@Override
-	public User convert(UserCommand source) {
+	public ApplicationUser convert(UserCommand source) {
 		if (source == null) return null;
-		User user = new User();
-		user.setFullName(source.getFullName());
+		ApplicationUser user = new ApplicationUser();
+		user.setFirstName(source.getFirstName());
+		user.setLastName(source.getLastName());
 		user.setHandle(source.getHandle());
 		Set<AccountCommand> cmds = source.getAccountCommands();
 		if ((cmds != null) && (!cmds.isEmpty())) {

@@ -1,18 +1,25 @@
 package com.formulafund.portfolio.web.controllers;
 
+import java.security.Principal;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.context.request.WebRequest;
 
+import com.formulafund.portfolio.data.commands.RegisterUserCommand;
 import com.formulafund.portfolio.data.model.Account;
-import com.formulafund.portfolio.data.model.User;
+import com.formulafund.portfolio.data.model.ApplicationUser;
 import com.formulafund.portfolio.data.services.AccountService;
 import com.formulafund.portfolio.data.services.UserService;
 import com.formulafund.portfolio.web.commands.AccountCommand;
@@ -29,10 +36,15 @@ public class UserController {
 	private AccountService accountService;
 	private UserService userService;
 
+
+    private MessageSource messageSource;
 	
-	public UserController(AccountService aService, UserService uService) {
+	public UserController(AccountService aService, 
+						  UserService uService,
+						  MessageSource mSource) {
 		this.accountService = aService;
 		this.userService = uService;
+		this.messageSource = mSource;
 	}
 	
 	@RequestMapping({"user", "user/index"})
@@ -46,7 +58,7 @@ public class UserController {
 	public String showAccountsForUser(@PathVariable String id, Model model, HttpServletRequest request) {
 		System.out.println("show user " + id);
 		Long idLong = Long.valueOf(id);
-		User user = this.userService.findById(idLong);
+		ApplicationUser user = this.userService.findById(idLong);
 		model.addAttribute("user", user);
 		if ((request.getRemoteUser() != null) && (request.getRemoteUser().equals(user.getHandle()))) {
 			model.addAttribute("allowAdd", true);
@@ -60,7 +72,7 @@ public class UserController {
 	public String provideAddAccountForm(@PathVariable String id, Model model) {
 		log.debug("provide Add Account Form for user id " + id);
 		Long idLong = Long.valueOf(id);
-		User user = this.userService.findById(idLong);
+		ApplicationUser user = this.userService.findById(idLong);
 		AddAccountCommand command = new AddAccountCommand();
 		command.setId(id);
 		command.setUserFullName(user.getFullName());
@@ -70,10 +82,22 @@ public class UserController {
 	}
 	
 	@RequestMapping(value="/logout",method = RequestMethod.GET)
-    public String logout(HttpServletRequest request){
+    public String logout(Principal principal, HttpServletRequest request){
+		Authentication authentication = (Authentication) principal;
+		org.springframework.security.core.userdetails.User securityCoreUser = 
+				(org.springframework.security.core.userdetails.User) authentication.getPrincipal();
+		System.out.println(authentication.getPrincipal().getClass().getName());
+		System.out.println(securityCoreUser.getUsername() + " logged out");
         HttpSession httpSession = request.getSession();
         httpSession.invalidate();
         return "redirect:/";
     }
+	
+	@GetMapping("/user/registration")
+	public String showRegistrationForm(WebRequest request, Model model) {
+	    RegisterUserCommand userDto = new RegisterUserCommand();
+	    model.addAttribute("user", userDto);
+	    return "user/registration";
+	}
 	
 }

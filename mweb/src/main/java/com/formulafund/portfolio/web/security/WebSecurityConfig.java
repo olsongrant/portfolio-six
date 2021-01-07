@@ -3,6 +3,7 @@ package com.formulafund.portfolio.web.security;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -41,7 +42,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 					"/user", 
 					"/user/index", 
 					"/resources/**",
-					"/webjars/**").permitAll()
+					"/webjars/**",
+					"/user/registration",
+					"/login",
+					"/holdings/h",
+					"/oups").permitAll()
 			.anyRequest().authenticated()
 			.and()
 		.formLogin()
@@ -51,6 +56,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		.logout()
 			.permitAll();
 	}
+	
+	/*
+	 * This was necessary to allow the H2 console's security to work
+	 */
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+        web
+            .ignoring()
+            .antMatchers("/h2-console/**");
+    }
 
 }
 

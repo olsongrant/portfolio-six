@@ -13,7 +13,7 @@ import com.formulafund.portfolio.data.commands.BuyCommand;
 import com.formulafund.portfolio.data.model.Account;
 import com.formulafund.portfolio.data.model.Ticker;
 import com.formulafund.portfolio.data.model.Transaction;
-import com.formulafund.portfolio.data.model.User;
+import com.formulafund.portfolio.data.model.ApplicationUser;
 import com.formulafund.portfolio.data.services.AccountService;
 import com.formulafund.portfolio.data.services.PriceService;
 import com.formulafund.portfolio.data.services.TickerService;

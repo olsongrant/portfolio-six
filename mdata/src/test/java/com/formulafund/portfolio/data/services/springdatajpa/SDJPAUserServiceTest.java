@@ -16,7 +16,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.formulafund.portfolio.data.model.User;
+import com.formulafund.portfolio.data.model.ApplicationUser;
 import com.formulafund.portfolio.data.repositories.UserRepository;
 
 @ExtendWith(MockitoExtension.class)
@@ -28,12 +28,12 @@ class SDJPAUserServiceTest {
 	@InjectMocks
 	SDJPAUserService userService;
 	
-	HashMap<Long, User> tracker = new HashMap<>();
+	HashMap<Long, ApplicationUser> tracker = new HashMap<>();
 
 	@BeforeEach
 	void setUp() throws Exception {
-		User guy = User.with("Guy Smiley", "guy");
-		User janie = User.with("Janie Lane", "janie");
+		ApplicationUser guy = ApplicationUser.with("Guy", "Smiley", "guy");
+		ApplicationUser janie = ApplicationUser.with("Janie", "Lane", "janie");
 	}
 
 	@AfterEach
@@ -42,7 +42,7 @@ class SDJPAUserServiceTest {
 
 	@Test
 	void testFindAll() {
-		Set<User> foundUsers = this.userService.findAll();
+		Set<ApplicationUser> foundUsers = this.userService.findAll();
 		verify(this.userRepository).findAll();
 	}
 
@@ -50,13 +50,13 @@ class SDJPAUserServiceTest {
 	void testFindById() {
 		Long anId = 10L;
 //		assertEquals(anId, aUser.getId());
-		User u = this.userService.findById(anId);
+		ApplicationUser u = this.userService.findById(anId);
 		verify(this.userRepository).findById(anyLong());
 	}
 
 	@Test
 	void testSave() {
-		User bugs = User.with("Bugs Bunny", "bugs");
+		ApplicationUser bugs = ApplicationUser.with("Bugs", "Bunny", "bugs");
 		this.userService.save(bugs);
 		this.tracker.put(bugs.getId(), bugs);
 		verify(this.userRepository).save(any());
@@ -65,7 +65,7 @@ class SDJPAUserServiceTest {
 	@Test
 	void testDelete() {
 		int previousSize = this.userService.findAll().size();
-		User aUser = User.with("ToBe Deleted", "tobe");
+		ApplicationUser aUser = ApplicationUser.with("ToBe", "Deleted", "tobe");
 		this.userService.delete(aUser);
 		int afterDeleteSize = this.userService.findAll().size();
 		verify(this.userRepository).delete(any());

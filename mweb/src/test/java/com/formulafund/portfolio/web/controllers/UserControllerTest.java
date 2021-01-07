@@ -11,10 +11,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.context.MessageSource;
 import org.springframework.ui.Model;
 
 import com.formulafund.portfolio.data.model.Account;
-import com.formulafund.portfolio.data.model.User;
+import com.formulafund.portfolio.data.model.ApplicationUser;
 import com.formulafund.portfolio.data.services.AccountService;
 import com.formulafund.portfolio.data.services.UserService;
 
@@ -24,18 +25,24 @@ class UserControllerTest {
 	
 
 	UserController controller;
-	User kirk = User.with("James T. Kirk", "kirk");
+	ApplicationUser kirk = ApplicationUser.with("James",  "Kirk", "kirk");
 	
 	@Mock
 	AccountService accountService;
 	
 	@Mock
 	UserService userService;
+	
+	@Mock
+	MessageSource messageSource;
 
 	@BeforeEach
 	void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-		controller = new UserController(this.accountService, this.userService);
+		controller = new UserController(
+				this.accountService, 
+				this.userService,
+				this.messageSource);
 	}
 
 	@AfterEach

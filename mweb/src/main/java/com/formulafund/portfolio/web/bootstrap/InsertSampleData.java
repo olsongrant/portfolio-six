@@ -14,7 +14,7 @@ import com.formulafund.portfolio.data.model.IssuingCompany;
 import com.formulafund.portfolio.data.model.StockHolding;
 import com.formulafund.portfolio.data.model.Ticker;
 import com.formulafund.portfolio.data.model.Transaction;
-import com.formulafund.portfolio.data.model.User;
+import com.formulafund.portfolio.data.model.ApplicationUser;
 import com.formulafund.portfolio.data.services.AccountService;
 import com.formulafund.portfolio.data.services.IssuingCompanyService;
 import com.formulafund.portfolio.data.services.TickerService;
@@ -56,12 +56,17 @@ public class InsertSampleData implements CommandLineRunner {
 	@Transactional
 	protected void insertSampleInfo() {
 		System.out.println("InsertSampleData::run");
-		User grant = new User();
-		grant.setFullName("Grant Olson");
+		ApplicationUser grant = new ApplicationUser();
+		grant.setFirstName("Grant");
+		grant.setLastName("Olson");
 		grant.setHandle("grantcine");
+		grant.setEmailAddress("email@address.com");
+		grant.setPassword("aPassword");
 		this.userService.save(grant);
 		System.out.println("Saved a Grant Olson user.");
-		User daffy = User.with("Daffy Duck", "daffy");
+		ApplicationUser daffy = ApplicationUser.with("Daffy", "Duck", "daffy");
+		daffy.setEmailAddress("daffy@address.com");
+		daffy.setPassword("ducksrule");
 		this.userService.save(daffy);
 		Account valueInvesting = Account.with("valueAccount", grant);
 		Account growthInvesting = Account.with("growthInvesting", grant);

@@ -11,19 +11,19 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.formulafund.portfolio.data.model.User;
+import com.formulafund.portfolio.data.model.ApplicationUser;
 import com.formulafund.portfolio.data.services.UserService;
 
 class MapUserServiceTest {
 	
 	UserService userService;
-	HashMap<Long, User> tracker = new HashMap<>();
+	HashMap<Long, ApplicationUser> tracker = new HashMap<>();
 
 	@BeforeEach
 	void setUp() throws Exception {
 		this.userService = new MapUserService();
-		User guy = User.with("Guy Smiley", "guy");
-		User janie = User.with("Janie Lane", "janie");
+		ApplicationUser guy = ApplicationUser.with("Guy", "Smiley", "guy");
+		ApplicationUser janie = ApplicationUser.with("Janie", "Lane", "janie");
 		this.userService.save(guy);
 		this.userService.save(janie);
 		this.tracker.put(guy.getId(), guy);
@@ -36,20 +36,20 @@ class MapUserServiceTest {
 
 	@Test
 	void testFindAll() {
-		Set<User> foundUsers = this.userService.findAll();
+		Set<ApplicationUser> foundUsers = this.userService.findAll();
 		assertEquals(this.tracker.keySet().size(), foundUsers.size());
 	}
 
 	@Test
 	void testFindById() {
 		Long anId = this.tracker.keySet().stream().findAny().get();
-		User aUser = this.userService.findById(anId);
+		ApplicationUser aUser = this.userService.findById(anId);
 		assertEquals(anId, aUser.getId());
 	}
 
 	@Test
 	void testSave() {
-		User bugs = User.with("Bugs Bunny", "bugs");
+		ApplicationUser bugs = ApplicationUser.with("Bugs", "Bunny", "bugs");
 		this.userService.save(bugs);
 		assertNotNull(bugs.getId());
 		this.tracker.put(bugs.getId(), bugs);
@@ -68,7 +68,7 @@ class MapUserServiceTest {
 	@Test
 	void testDelete() {
 		int previousSize = this.userService.findAll().size();
-		User aUser = this.tracker.values().stream().findAny().get();
+		ApplicationUser aUser = this.tracker.values().stream().findAny().get();
 		this.userService.delete(aUser);
 		int afterDeleteSize = this.userService.findAll().size();
 		assertNotEquals(previousSize, afterDeleteSize);

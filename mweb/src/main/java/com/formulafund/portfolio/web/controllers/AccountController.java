@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import com.formulafund.portfolio.data.model.Account;
-import com.formulafund.portfolio.data.model.User;
+import com.formulafund.portfolio.data.model.ApplicationUser;
 import com.formulafund.portfolio.data.services.AccountService;
 import com.formulafund.portfolio.data.services.UserService;
 import com.formulafund.portfolio.web.commands.AddAccountCommand;
@@ -30,7 +30,7 @@ public class AccountController {
     	System.out.println("AccountController::saveOrUpdate");
     	System.out.println("AddAccountCommand: " + command);
     	Long idLong = Long.valueOf(command.getId());
-    	User aUser = this.userService.findById(idLong);
+    	ApplicationUser aUser = this.userService.findById(idLong);
     	Account account = Account.with(command.getAccountName(), aUser);
     	this.accountService.save(account);
         return "redirect:/user/" + aUser.getId() + "/show";
