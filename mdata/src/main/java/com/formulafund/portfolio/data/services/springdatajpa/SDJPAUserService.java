@@ -7,6 +7,7 @@ import java.util.stream.StreamSupport;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
+import com.formulafund.portfolio.data.commands.RegisterUserCommand;
 import com.formulafund.portfolio.data.model.ApplicationUser;
 import com.formulafund.portfolio.data.repositories.UserRepository;
 import com.formulafund.portfolio.data.services.UserService;
@@ -45,6 +46,12 @@ public class SDJPAUserService implements UserService {
 	@Override
 	public void deleteById(Long id) {
 		this.userRepository.deleteById(id);
+	}
+
+	@Override
+	public ApplicationUser registerUser(RegisterUserCommand command) {
+		ApplicationUser aUser = this.setupUser(command);
+		return this.userRepository.save(aUser);
 	}
 
 }

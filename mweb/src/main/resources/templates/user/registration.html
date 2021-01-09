@@ -5,7 +5,7 @@
 </head>
 <body>
 <h1 th:text="#{label.form.title}">form</h1>
-<form action="/" th:object="${user}" method="POST" enctype="utf8">
+<form th:object="${user}" th:action="@{/register}" method="POST" enctype="utf8">
     <div>
         <label th:text="#{label.user.firstName}">first</label>
         <input th:field="*{firstName}"/>
@@ -22,6 +22,12 @@
         <label th:text="#{label.user.email}">email</label>
         <input type="email" th:field="*{email}"/>
         <p th:each="error : ${#fields.errors('email')}" 
+          th:text="${error}">Validation error</p>
+    </div>
+    <div>
+        <label th:text="#{label.user.handle}">handle</label>
+        <input th:field="*{handle}"/>
+        <p th:each="error : ${#fields.errors('handle')}" 
           th:text="${error}">Validation error</p>
     </div>
     <div>

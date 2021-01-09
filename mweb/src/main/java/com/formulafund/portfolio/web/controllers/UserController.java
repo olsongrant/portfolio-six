@@ -5,6 +5,7 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -12,11 +13,14 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.context.request.WebRequest;
 
+import com.formulafund.portfolio.data.commands.BuyCommand;
 import com.formulafund.portfolio.data.commands.RegisterUserCommand;
 import com.formulafund.portfolio.data.model.Account;
 import com.formulafund.portfolio.data.model.ApplicationUser;
@@ -35,16 +39,13 @@ public class UserController {
 	
 	private AccountService accountService;
 	private UserService userService;
-
-
-    private MessageSource messageSource;
 	
 	public UserController(AccountService aService, 
 						  UserService uService,
 						  MessageSource mSource) {
 		this.accountService = aService;
 		this.userService = uService;
-		this.messageSource = mSource;
+
 	}
 	
 	@RequestMapping({"user", "user/index"})
@@ -60,8 +61,10 @@ public class UserController {
 		Long idLong = Long.valueOf(id);
 		ApplicationUser user = this.userService.findById(idLong);
 		model.addAttribute("user", user);
-		if ((request.getRemoteUser() != null) && (request.getRemoteUser().equals(user.getHandle()))) {
+		if ((request.getRemoteUser() != null) && (request.getRemoteUser().equals(user.getEmailAddress()))) {
 			model.addAttribute("allowAdd", true);
+		} else {
+			// we want to inform the user to login so that they can add an account
 		}
 		Set<Account> accountSet = user.getAccounts();
 		model.addAttribute("accountSet", accountSet);
@@ -99,5 +102,16 @@ public class UserController {
 	    model.addAttribute("user", userDto);
 	    return "user/registration";
 	}
+	
+	@Transactional
+    @PostMapping("/register")
+    public String registerUser(@ModelAttribute RegisterUserCommand command){
+    	
+    	log.info("UserController::registerUser");
+    	log.info("RegisterUserCommand: " + command);
+    	ApplicationUser user = this.userService.registerUser(command);
+    	String destination = "redirect:/user/" + user.getId() + "/show";
+        return destination;
+    }
 	
 }

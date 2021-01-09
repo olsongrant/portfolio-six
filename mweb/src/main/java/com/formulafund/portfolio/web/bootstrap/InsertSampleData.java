@@ -60,8 +60,8 @@ public class InsertSampleData implements CommandLineRunner {
 		grant.setFirstName("Grant");
 		grant.setLastName("Olson");
 		grant.setHandle("grantcine");
-		grant.setEmailAddress("email@address.com");
-		grant.setPassword("aPassword");
+		grant.setEmailAddress("grant@address.com");
+		grant.setPassword("grantcine");
 		this.userService.save(grant);
 		System.out.println("Saved a Grant Olson user.");
 		ApplicationUser daffy = ApplicationUser.with("Daffy", "Duck", "daffy");

@@ -5,7 +5,7 @@
     <title>User Landing</title>
 </head>
 <body>
-<h1>User Landing Page</h1>
+<h1 th:text="${'User: ' + (user.fullName) + ' Handle: ' + (user.handle)}">User Landing Page</h1>
 <h2>Accounts List</h2>
 <table id="accounts" class="table">
     <tr>
@@ -22,6 +22,10 @@
 <div th:if="${allowAdd}">
 	<a href="#" th:href="@{'/user/' + ${user.id} + '/addaccount'}">Add Account</a>
 </div>
+<div th:unless="${allowAdd}">
+	<a href="#" th:href="@{'/login'}">Log in to add an account</a>
+</div>
+
 
 </body>
 </html>

@@ -53,14 +53,9 @@
                       <span>All Users</span>
                   </li>
   
-                  <li th:replace="::menuItem ('/user/index','user','see accounts','search','Accounts for user')">
+                  <li th:replace="::menuItem ('/user/index','user','see accounts','search','Browse Accounts')">
                       <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
-                      <span>Accounts for User</span>
-                  </li>
-  
-                  <li th:replace="::menuItem ('/holdings/h','holdings','stocks held','th-list','Holdings')">
-                      <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
-                      <span>Holdings</span>
+                      <span>Browse Accounts</span>
                   </li>
   
                   <li th:replace="::menuItem ('/oups','error','trigger a RuntimeException to see how it is handled','warning-sign','Error')">

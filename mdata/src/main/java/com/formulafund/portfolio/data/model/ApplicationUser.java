@@ -49,7 +49,7 @@ public class ApplicationUser extends BaseEntity {
 	@Override
 	public String toString() {
 		log.debug("in User::toString");
-		return "User [fullName=" + firstName + ", handle=" + handle + ", id=" + id + "]";
+		return this.getEmailAddress();
 	}
 	
 	

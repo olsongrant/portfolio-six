@@ -27,5 +27,9 @@ public class RegisterUserCommand {
     @NotNull
     @NotEmpty
     private String email;
+    
+    @NotNull
+    @NotEmpty
+    private String handle;
 
 }

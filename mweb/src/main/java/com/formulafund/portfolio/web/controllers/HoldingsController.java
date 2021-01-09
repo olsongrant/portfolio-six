@@ -39,7 +39,7 @@ public class HoldingsController {
 		Long idLong = Long.valueOf(id);
 		Account account = this.accountService.findById(idLong);
 		ApplicationUser user = account.getUser();
-		if ((request.getRemoteUser() != null) && (request.getRemoteUser().equals(user.getHandle()))) {
+		if ((request.getRemoteUser() != null) && (request.getRemoteUser().equals(user.getEmailAddress()))) {
 			model.addAttribute("allowAdd", true);
 		}
 		model.addAttribute("account", account);

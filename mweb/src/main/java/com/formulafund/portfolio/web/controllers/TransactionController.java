@@ -48,19 +48,6 @@ public class TransactionController {
     	System.out.println("TransactionController::purchaseStock");
     	System.out.println("BuyCommand: " + command);
     	this.accountService.buyAndReportRemainingCash(command);
-   /* 	Long idLong = Long.valueOf(command.getAccountId());
-    	Account account = this.accountService.findById(idLong);
-    	Optional<Ticker> potentialTicker = this.tickerService.findTickerBySymbol(command.getSymbol());
-    	if (potentialTicker.isEmpty()) {
-    		log.debug("ticker was not found by symbol");
-    		return destination;
-    	}
-    	Ticker ticker = potentialTicker.get();
-    	Float roundedNewCurrent = this.priceService.getPriceAndDeduct(command.getShareQuantity(), account.getCurrentCash(), ticker);
-    	account.setCurrentCash(roundedNewCurrent);
-    	this.accountService.save(account);
-    	Transaction txn = Transaction.purchaseOf(ticker, LocalDateTime.now(), account, command.getShareQuantity());
-    	this.transactionService.save(txn); */
         return destination;
     }
 
