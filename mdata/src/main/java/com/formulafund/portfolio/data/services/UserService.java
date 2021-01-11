@@ -10,13 +10,15 @@ public interface UserService extends CrudService<ApplicationUser> {
 
 	ApplicationUser registerUser(RegisterUserCommand command);
 	
-	public default ApplicationUser setupUser(RegisterUserCommand command) {
+	public default ApplicationUser setupUser(RegisterUserCommand command,
+											 PasswordEncoderService encoder) {
 		ApplicationUser user = new ApplicationUser();
 		user.setEmailAddress(command.getEmail());
 		user.setFirstName(command.getFirstName());
 		user.setLastName(command.getLastName());
 		user.setHandle(command.getHandle());
-		user.setPassword(command.getPassword());
+		String encodedPassword = encoder.encode(command.getPassword());
+		user.setPassword(encodedPassword);
 		user = this.save(user);
 		return user;
 	}

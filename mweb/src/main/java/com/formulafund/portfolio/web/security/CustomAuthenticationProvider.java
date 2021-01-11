@@ -12,34 +12,36 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import com.formulafund.portfolio.data.model.ApplicationUser;
+import com.formulafund.portfolio.data.services.PasswordEncoderService;
 import com.formulafund.portfolio.data.services.UserService;
 
 @Component
 public class CustomAuthenticationProvider implements AuthenticationProvider {
 	
 	private UserService userService;
+	private PasswordEncoderService encoderService;
 	
-	public CustomAuthenticationProvider(UserService aUserService) {
+	public CustomAuthenticationProvider(UserService aUserService,
+										PasswordEncoderService passwordEncoderService) {
 		this.userService = aUserService;
+		this.encoderService = passwordEncoderService;
 	}
 
 	@Override
 	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 	    String name = authentication.getName();
-	    
-	    String password = authentication.getCredentials().toString();
-	    System.out.println("CustomAuthenticationProvider::authenticate. Credentials: " + name + ": " + password);
+	    if (authentication.getCredentials() == null) return null;
+	    String rawPassword = authentication.getCredentials().toString();
+	    System.out.println("CustomAuthenticationProvider::authenticate. Credentials: " + name + ": " + rawPassword);
 	    if (name == null) return null;
-	    if (password == null) return null;
+	    if (rawPassword == null) return null;
 	    Optional<ApplicationUser> potentialUser = this.userService.findByEmailAddress(name);
 	    if (potentialUser.isEmpty()) {
 	    	return null;
 	    }
 	    ApplicationUser user = potentialUser.get();
-	    boolean matches = user.getPassword().equalsIgnoreCase(password);
-	    if (matches) {
-	    	System.out.println("voting that the principal is authenticated from CustomAuthenticationProvider::authenticate");
-	    }
+	    String encodedPassword = user.getPassword();
+	    boolean matches = this.encoderService.matches(rawPassword, encodedPassword);
     	Object credentials = authentication.getCredentials();
         boolean enabled = true;
         boolean accountNonExpired = true;
@@ -61,6 +63,13 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
     			new UsernamePasswordAuthenticationToken(secCoreUser, 
     													credentials, 
     													authorities);
+	    if (matches) {
+	    	System.out.println("voting that the principal is authenticated from CustomAuthenticationProvider::authenticate");
+	    } else {
+	    	System.out.println("Passwords did not match --> voting isAuthenticated==false");
+	    	votingAuth.setAuthenticated(false);
+	    	return null;  // can't seem to have this do-not-authenticate bit "take", so returning null
+	    }
 		return votingAuth;
 	}
 

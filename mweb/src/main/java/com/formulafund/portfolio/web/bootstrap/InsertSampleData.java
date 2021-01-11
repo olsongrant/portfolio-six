@@ -17,6 +17,7 @@ import com.formulafund.portfolio.data.model.Transaction;
 import com.formulafund.portfolio.data.model.ApplicationUser;
 import com.formulafund.portfolio.data.services.AccountService;
 import com.formulafund.portfolio.data.services.IssuingCompanyService;
+import com.formulafund.portfolio.data.services.PasswordEncoderService;
 import com.formulafund.portfolio.data.services.TickerService;
 import com.formulafund.portfolio.data.services.TransactionService;
 import com.formulafund.portfolio.data.services.UserService;
@@ -30,6 +31,7 @@ public class InsertSampleData implements CommandLineRunner {
 	private TickerService tickerService;
 	private TransactionService transactionService;
 	private IssuingCompanyService issuingCompanyService;
+	private PasswordEncoderService encoderService;
 
 	
 	public InsertSampleData(
@@ -37,12 +39,14 @@ public class InsertSampleData implements CommandLineRunner {
 			AccountService aService,
 			TickerService tService,
 			TransactionService txnService,
-			IssuingCompanyService icService) {
+			IssuingCompanyService icService,
+			PasswordEncoderService anEncoderService) {
 		this.userService = uService;
 		this.accountService = aService;
 		this.tickerService = tService;
 		this.transactionService = txnService;
 		this.issuingCompanyService = icService;
+		this.encoderService = anEncoderService;
 	}
 
 	@Override
@@ -61,12 +65,12 @@ public class InsertSampleData implements CommandLineRunner {
 		grant.setLastName("Olson");
 		grant.setHandle("grantcine");
 		grant.setEmailAddress("grant@address.com");
-		grant.setPassword("grantcine");
+		grant.setPassword(this.encoderService.encode("grantcine"));
 		this.userService.save(grant);
 		System.out.println("Saved a Grant Olson user.");
 		ApplicationUser daffy = ApplicationUser.with("Daffy", "Duck", "daffy");
 		daffy.setEmailAddress("daffy@address.com");
-		daffy.setPassword("ducksrule");
+		daffy.setPassword(this.encoderService.encode("ducksrule"));
 		this.userService.save(daffy);
 		Account valueInvesting = Account.with("valueAccount", grant);
 		Account growthInvesting = Account.with("growthInvesting", grant);

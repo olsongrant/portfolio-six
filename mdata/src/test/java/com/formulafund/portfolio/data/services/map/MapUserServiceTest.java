@@ -12,6 +12,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.formulafund.portfolio.data.model.ApplicationUser;
+import com.formulafund.portfolio.data.services.BCryptEncoderService;
 import com.formulafund.portfolio.data.services.UserService;
 
 class MapUserServiceTest {
@@ -21,7 +22,9 @@ class MapUserServiceTest {
 
 	@BeforeEach
 	void setUp() throws Exception {
-		this.userService = new MapUserService();
+		
+		BCryptEncoderService encoderService = new BCryptEncoderService();
+		this.userService = new MapUserService(encoderService);
 		ApplicationUser guy = ApplicationUser.with("Guy", "Smiley", "guy");
 		ApplicationUser janie = ApplicationUser.with("Janie", "Lane", "janie");
 		this.userService.save(guy);

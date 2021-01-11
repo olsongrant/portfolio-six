@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.formulafund.portfolio.data.commands.RegisterUserCommand;
 import com.formulafund.portfolio.data.model.ApplicationUser;
 import com.formulafund.portfolio.data.repositories.UserRepository;
+import com.formulafund.portfolio.data.services.PasswordEncoderService;
 import com.formulafund.portfolio.data.services.UserService;
 
 @Service
@@ -18,8 +19,12 @@ public class SDJPAUserService implements UserService {
 	
 	private UserRepository userRepository;
 	
-	public SDJPAUserService(UserRepository uRepository) {
+	private PasswordEncoderService encoderService;
+	
+	public SDJPAUserService(UserRepository uRepository,
+							PasswordEncoderService anEncoderService) {
 		this.userRepository = uRepository;
+		this.encoderService = anEncoderService;
 	}
 
 	@Override
@@ -50,7 +55,7 @@ public class SDJPAUserService implements UserService {
 
 	@Override
 	public ApplicationUser registerUser(RegisterUserCommand command) {
-		ApplicationUser aUser = this.setupUser(command);
+		ApplicationUser aUser = this.setupUser(command, this.encoderService);
 		return this.userRepository.save(aUser);
 	}
 
