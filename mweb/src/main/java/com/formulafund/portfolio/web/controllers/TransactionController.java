@@ -45,8 +45,8 @@ public class TransactionController {
     @PostMapping("purchase")
     public String purchaseStock(@ModelAttribute BuyCommand command){
     	String destination = "redirect:/holdings/" + command.getAccountId() + "/show";
-    	System.out.println("TransactionController::purchaseStock");
-    	System.out.println("BuyCommand: " + command);
+    	log.info("TransactionController::purchaseStock");
+    	log.info("BuyCommand: " + command);
     	this.accountService.buyAndReportRemainingCash(command);
         return destination;
     }

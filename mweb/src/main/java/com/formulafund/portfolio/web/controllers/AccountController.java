@@ -27,8 +27,8 @@ public class AccountController {
     @PostMapping("account")
     public String saveOrUpdate(@ModelAttribute AddAccountCommand command){
         // RecipeCommand savedCommand = recipeService.saveRecipeCommand(command);
-    	System.out.println("AccountController::saveOrUpdate");
-    	System.out.println("AddAccountCommand: " + command);
+    	log.info("AccountController::saveOrUpdate");
+    	log.info("AddAccountCommand: " + command);
     	Long idLong = Long.valueOf(command.getId());
     	ApplicationUser aUser = this.userService.findById(idLong);
     	Account account = Account.with(command.getAccountName(), aUser);

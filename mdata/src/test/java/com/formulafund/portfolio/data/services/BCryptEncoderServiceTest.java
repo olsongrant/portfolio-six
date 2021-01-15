@@ -7,6 +7,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+
+@lombok.extern.slf4j.Slf4j
 class BCryptEncoderServiceTest {
 	
 	BCryptEncoderService encoder = new BCryptEncoderService();
@@ -25,7 +27,7 @@ class BCryptEncoderServiceTest {
 	void testEncode() {
 		String raw = "myRawPassword";
 		String encoded = this.encoder.encode(raw);
-		System.out.println("raw password: " + raw + ". encoded: " + encoded);
+		log.info("raw password: " + raw + ". encoded: " + encoded);
 		assertNotEquals(raw, encoded);
 	}
 
@@ -33,7 +35,7 @@ class BCryptEncoderServiceTest {
 	void testMatches() {
 		String raw = "myRawPassword";
 		boolean matches = this.encoder.matches(raw, alreadyEncodedPassword);
-		System.out.println("returned from matches(): " + matches);
+		log.info("returned from matches(): " + matches);
 		Assertions.assertTrue(matches);
 	}
 

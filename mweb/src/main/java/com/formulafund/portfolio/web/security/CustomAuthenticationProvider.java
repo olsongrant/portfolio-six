@@ -15,7 +15,10 @@ import com.formulafund.portfolio.data.model.ApplicationUser;
 import com.formulafund.portfolio.data.services.PasswordEncoderService;
 import com.formulafund.portfolio.data.services.UserService;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Component
+@Slf4j
 public class CustomAuthenticationProvider implements AuthenticationProvider {
 	
 	private UserService userService;
@@ -32,7 +35,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 	    String name = authentication.getName();
 	    if (authentication.getCredentials() == null) return null;
 	    String rawPassword = authentication.getCredentials().toString();
-	    System.out.println("CustomAuthenticationProvider::authenticate. Credentials: " + name + ": " + rawPassword);
+	    log.info("CustomAuthenticationProvider::authenticate. Credentials: " + name + ": " + rawPassword);
 	    if (name == null) return null;
 	    if (rawPassword == null) return null;
 	    Optional<ApplicationUser> potentialUser = this.userService.findByEmailAddress(name);
@@ -64,9 +67,9 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
     													credentials, 
     													authorities);
 	    if (matches) {
-	    	System.out.println("voting that the principal is authenticated from CustomAuthenticationProvider::authenticate");
+	    	log.info("voting that the principal is authenticated from CustomAuthenticationProvider::authenticate");
 	    } else {
-	    	System.out.println("Passwords did not match --> voting isAuthenticated==false");
+	    	log.info("Passwords did not match --> voting isAuthenticated==false");
 	    	votingAuth.setAuthenticated(false);
 	    	return null;  // can't seem to have this do-not-authenticate bit "take", so returning null
 	    }
@@ -75,9 +78,9 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
 	@Override
 	public boolean supports(Class<?> authentication) {
-		System.out.println("CustomAuthenticationProvider::supports invoked");
+		log.info("CustomAuthenticationProvider::supports invoked");
 		boolean supports = authentication.equals(UsernamePasswordAuthenticationToken.class);
-		System.out.println("returning from supports() method: " + supports);
+		log.info("returning from supports() method: " + supports);
 		return supports;
 	}
 

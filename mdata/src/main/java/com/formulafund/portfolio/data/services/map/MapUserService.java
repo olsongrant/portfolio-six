@@ -4,6 +4,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import com.formulafund.portfolio.data.commands.RegisterUserCommand;
+import com.formulafund.portfolio.data.commands.SocialUserCommand;
 import com.formulafund.portfolio.data.model.ApplicationUser;
 import com.formulafund.portfolio.data.services.PasswordEncoderService;
 import com.formulafund.portfolio.data.services.UserService;
@@ -21,6 +22,13 @@ public class MapUserService extends BaseMapService<ApplicationUser> implements U
 	@Override
 	public ApplicationUser registerUser(RegisterUserCommand command) {
 		ApplicationUser aUser = this.setupUser(command, this.encoderService);
+		aUser = this.save(aUser);
+		return aUser;
+	}
+
+	@Override
+	public ApplicationUser registerSocialUser(SocialUserCommand socialUser) {
+		ApplicationUser aUser = this.setupSocialUser(socialUser);
 		aUser = this.save(aUser);
 		return aUser;
 	}

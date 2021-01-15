@@ -1,0 +1,41 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'user')}">
+<head>
+    <meta charset="UTF-8"/>
+    <title>User Registration</title>
+</head>
+<body>
+<h1 th:text="#{label.form.title}">form</h1>
+<form th:object="${socialuser}" th:action="@{/socialregister}" method="POST" enctype="utf8">
+    <div>
+        <label th:text="#{label.user.firstName}">first</label>
+        <label th:text="*{firstName}">first_name</label>
+        <input id="userFirstName" th:field="*{firstName}" type="hidden"/>
+        <p th:each="error: ${#fields.errors('firstName')}" 
+          th:text="${error}">Validation error</p>
+    </div>
+    <div>
+        <label th:text="#{label.user.lastName}">last</label>
+        <label th:text="*{lastName}">last_name</label>
+        <input id="userLastName" th:field="*{lastName}" type="hidden"/>
+        <p th:each="error : ${#fields.errors('lastName')}" 
+          th:text="${error}">Validation error</p>
+    </div>
+    <div>
+        <label th:text="#{label.user.email}">email</label>
+        <label th:text="*{email}">email_address</label>
+        <input id="userEmail" th:field="*{email}" type="hidden"/>
+        <input id="userPlatformId" th:field="*{socialPlatformId}" type="hidden"/>
+        <p th:each="error : ${#fields.errors('email')}" 
+          th:text="${error}">Validation error</p>
+    </div>
+    <div>
+        <label th:text="#{label.user.handle}">handle</label>
+        <input th:field="*{handle}"/>
+        <p th:each="error : ${#fields.errors('handle')}" 
+          th:text="${error}">Validation error</p>
+    </div>
+    <button type="submit" th:text="#{label.form.submit}">submit</button>
+</form>
+
+<a th:href="@{/}" th:text="#{label.pages.backToHome}">home</a>
+</body>

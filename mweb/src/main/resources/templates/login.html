@@ -30,5 +30,16 @@
 	<div>
 		<a href="#" th:href="@{'/user/registration'}">Register</a>
 	</div>
+	<div class="container">
+		<div class="col-sm-3 well">
+			<h3>Log in / register with:</h3>
+			<div class="list-group">
+				<p th:each="url : ${urls}">
+					<a th:text="${url.key}" th:href="${url.value}" class="list-group-item active">Client</a>
+				</p>
+			</div>
+		</div>
+	</div>
+</div>
 </body>
 </html>

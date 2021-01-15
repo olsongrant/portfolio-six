@@ -21,8 +21,8 @@
 
   </head>
 
-<body th:with="rUser=${#httpServletRequest.remoteUser}, 
-			   shouldLogin=${#strings.isEmpty(#httpServletRequest.remoteUser)},
+<body th:with="rUser=${username}, 
+			   shouldLogin=${#strings.isEmpty(username)},
 			   logoutLabel='Logout (' + ${rUser} + ')'">
 
   <nav class="navbar navbar-default" role="navigation">

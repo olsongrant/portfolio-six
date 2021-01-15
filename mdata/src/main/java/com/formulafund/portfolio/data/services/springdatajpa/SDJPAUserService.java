@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import com.formulafund.portfolio.data.commands.RegisterUserCommand;
+import com.formulafund.portfolio.data.commands.SocialUserCommand;
 import com.formulafund.portfolio.data.model.ApplicationUser;
 import com.formulafund.portfolio.data.repositories.UserRepository;
 import com.formulafund.portfolio.data.services.PasswordEncoderService;
@@ -59,4 +60,10 @@ public class SDJPAUserService implements UserService {
 		return this.userRepository.save(aUser);
 	}
 
+	@Override
+	public ApplicationUser registerSocialUser(SocialUserCommand socialUser) {
+		ApplicationUser aUser = this.setupSocialUser(socialUser);
+		aUser = this.save(aUser);
+		return aUser;
+	}
 }

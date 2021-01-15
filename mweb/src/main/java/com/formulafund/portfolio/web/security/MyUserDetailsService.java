@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import com.formulafund.portfolio.data.model.ApplicationUser;
 import com.formulafund.portfolio.data.services.UserService;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -20,11 +22,12 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 @Service
 @Transactional
+@Slf4j
 public class MyUserDetailsService implements UserDetailsService {
 	
 	public MyUserDetailsService(UserService aUserService) {
-		System.out.println("MyUserDetailsService::constructor invoked.");
-		System.out.println("userService class: " + aUserService.getClass().getName());
+		log.info("MyUserDetailsService::constructor invoked.");
+		log.info("userService class: " + aUserService.getClass().getName());
 		this.userService = aUserService;
 	}
  
@@ -33,7 +36,7 @@ public class MyUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String email)
       throws UsernameNotFoundException {
     	
-    	System.out.println("MyUserDetailsService::loadUserByUsername entered.");
+    	log.info("MyUserDetailsService::loadUserByUsername entered.");
  
         Optional<ApplicationUser> potentialUser = userService.findByEmailAddress(email);
         if (potentialUser.isEmpty()) {

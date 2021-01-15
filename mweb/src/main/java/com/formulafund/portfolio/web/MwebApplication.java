@@ -7,8 +7,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.support.ResourceBundleMessageSource;
 
+import lombok.extern.slf4j.Slf4j;
+
 @SpringBootApplication
 @ComponentScan({"com.formulafund.portfolio.data", "com.formulafund.portfolio.web"})
+@Slf4j
 public class MwebApplication {
 
 	public static void main(String[] args) {
@@ -16,7 +19,7 @@ public class MwebApplication {
 		ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
 		messageSource.setBasenames("messages");
 		String labelFormTitle = messageSource.getMessage("label.form.title", null, Locale.ENGLISH);
-		System.out.println("label.form.title (a verification of the resource bundle availability): " + labelFormTitle);
+		log.info("label.form.title (a verification of the resource bundle availability): " + labelFormTitle);
 
 	}
 

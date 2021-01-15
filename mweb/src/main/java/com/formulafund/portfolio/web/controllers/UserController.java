@@ -1,6 +1,8 @@
 package com.formulafund.portfolio.web.controllers;
 
 import java.security.Principal;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
@@ -10,6 +12,8 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,8 +26,10 @@ import org.springframework.web.context.request.WebRequest;
 
 import com.formulafund.portfolio.data.commands.BuyCommand;
 import com.formulafund.portfolio.data.commands.RegisterUserCommand;
+import com.formulafund.portfolio.data.commands.SocialUserCommand;
 import com.formulafund.portfolio.data.model.Account;
 import com.formulafund.portfolio.data.model.ApplicationUser;
+import com.formulafund.portfolio.data.model.FacebookUser;
 import com.formulafund.portfolio.data.services.AccountService;
 import com.formulafund.portfolio.data.services.UserService;
 import com.formulafund.portfolio.web.commands.AccountCommand;
@@ -36,28 +42,27 @@ import lombok.extern.slf4j.Slf4j;
 @Controller
 @Slf4j
 public class UserController {
-	
+	  
 	private AccountService accountService;
 	private UserService userService;
-	
+		
 	public UserController(AccountService aService, 
 						  UserService uService,
 						  MessageSource mSource) {
 		this.accountService = aService;
 		this.userService = uService;
-
 	}
 	
 	@RequestMapping({"user", "user/index"})
 	public String getIndex(Model model) {
-		System.out.println("user index page was requested");
+		log.info("user index page was requested");
 		model.addAttribute("accountSet", this.accountService.findAll());
 		return "user/index";
 	}
 	
 	@RequestMapping("/user/{id}/show")
 	public String showAccountsForUser(@PathVariable String id, Model model, HttpServletRequest request) {
-		System.out.println("show user " + id);
+		log.info("show user " + id);
 		Long idLong = Long.valueOf(id);
 		ApplicationUser user = this.userService.findById(idLong);
 		model.addAttribute("user", user);
@@ -87,10 +92,10 @@ public class UserController {
 	@RequestMapping(value="/logout",method = RequestMethod.GET)
     public String logout(Principal principal, HttpServletRequest request){
 		Authentication authentication = (Authentication) principal;
-		org.springframework.security.core.userdetails.User securityCoreUser = 
-				(org.springframework.security.core.userdetails.User) authentication.getPrincipal();
-		System.out.println(authentication.getPrincipal().getClass().getName());
-		System.out.println(securityCoreUser.getUsername() + " logged out");
+//		org.springframework.security.core.userdetails.User securityCoreUser = 
+//				(org.springframework.security.core.userdetails.User) authentication.getPrincipal();
+		log.info(authentication.getPrincipal().getClass().getName());
+//		log.info(securityCoreUser.getUsername() + " logged out");
         HttpSession httpSession = request.getSession();
         httpSession.invalidate();
         return "redirect:/";
@@ -114,4 +119,14 @@ public class UserController {
         return destination;
     }
 	
+	@Transactional
+    @PostMapping("/socialregister")
+    public String registerSocialUser(@ModelAttribute SocialUserCommand command){
+    	
+    	log.info("UserController::registerSocialUser");
+    	log.info("SocialUserCommand: " + command);
+    	ApplicationUser user = this.userService.registerSocialUser(command);
+    	String destination = "redirect:/oauth2/authorize-client/facebook";
+        return destination;
+    }
 }

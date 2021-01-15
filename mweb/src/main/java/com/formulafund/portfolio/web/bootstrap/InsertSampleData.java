@@ -23,7 +23,10 @@ import com.formulafund.portfolio.data.services.TransactionService;
 import com.formulafund.portfolio.data.services.UserService;
 import com.formulafund.portfolio.data.view.HoldingView;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Component
+@Slf4j
 public class InsertSampleData implements CommandLineRunner {
 	
 	private UserService userService;
@@ -59,19 +62,26 @@ public class InsertSampleData implements CommandLineRunner {
 
 	@Transactional
 	protected void insertSampleInfo() {
-		System.out.println("InsertSampleData::run");
+		log.debug("InsertSampleData::run");
 		ApplicationUser grant = new ApplicationUser();
-		grant.setFirstName("Grant");
+		grant.setFirstName("Grantcine");
 		grant.setLastName("Olson");
 		grant.setHandle("grantcine");
 		grant.setEmailAddress("grant@address.com");
 		grant.setPassword(this.encoderService.encode("grantcine"));
 		this.userService.save(grant);
-		System.out.println("Saved a Grant Olson user.");
+		log.info("Saved a Grant Olson user.");
 		ApplicationUser daffy = ApplicationUser.with("Daffy", "Duck", "daffy");
 		daffy.setEmailAddress("daffy@address.com");
 		daffy.setPassword(this.encoderService.encode("ducksrule"));
 		this.userService.save(daffy);
+//		ApplicationUser realgrant = new ApplicationUser();
+//		realgrant.setFirstName("Grant");
+//		realgrant.setLastName("Olson");
+//		realgrant.setHandle("realgrant");
+//		realgrant.setEmailAddress("grant.olson@gmail.com");
+//		realgrant.setPassword(this.encoderService.encode("gman"));
+//		this.userService.save(realgrant);
 		Account valueInvesting = Account.with("valueAccount", grant);
 		Account growthInvesting = Account.with("growthInvesting", grant);
 		this.accountService.save(valueInvesting);
@@ -82,7 +92,7 @@ public class InsertSampleData implements CommandLineRunner {
 		this.accountService.save(etfTrader);
 		IssuingCompany berkshireItself = this.issuingCompanyService.getInstanceFor("Berkshire Hathaway");
 		Ticker berkshireB = this.tickerService.getInstanceFor("BRKB", berkshireItself, Exchange.NYSE );
-		System.out.println("valueInvesting cash immediately after account creation: " + 
+		log.info("valueInvesting cash immediately after account creation: " + 
 							valueInvesting.getCurrentCash());
 		BuyCommand buy = new BuyCommand();
 		buy.setAccountId(valueInvesting.getId());
@@ -92,7 +102,7 @@ public class InsertSampleData implements CommandLineRunner {
 //		this.transactionService.save(berkshireToday);
 		this.accountService.buyAndReportRemainingCash(buy);
 		valueInvesting = this.accountService.findById(valueInvesting.getId());
-		System.out.println("valueInvesting cash immediately after buying BRKB: " + 
+		log.info("valueInvesting cash immediately after buying BRKB: " + 
 				valueInvesting.getCurrentCash());		
 		IssuingCompany alphabet = this.issuingCompanyService.getInstanceFor("Google");
 		Ticker goog = this.tickerService.getInstanceFor("GOOG", alphabet, Exchange.NASDAQ);
@@ -113,11 +123,11 @@ public class InsertSampleData implements CommandLineRunner {
 		buy.setShareQuantity(40.0f);
 		this.accountService.buyAndReportRemainingCash(buy);
 		valueInvesting = this.accountService.findById(valueInvesting.getId());
-		System.out.println("valueInvesting cash immediately after buying MSFT: " + 
+		log.info("valueInvesting cash immediately after buying MSFT: " + 
 				valueInvesting.getCurrentCash());
 		Set<Transaction> hodgePodgePurchases = this.transactionService.purchasesForAccount(valueInvesting); 
-		System.out.println("stock purchases for the portfolio: ");
-		hodgePodgePurchases.forEach(sp -> System.out.println(sp.toString()));
+		log.info("stock purchases for the portfolio: ");
+		hodgePodgePurchases.forEach(sp -> log.info(sp.toString()));
 		IssuingCompany netflix = this.issuingCompanyService.getInstanceFor("Netflix");
 		Ticker nflx = this.tickerService.getInstanceFor("NFLX", netflix, Exchange.NASDAQ);
 //		Transaction nflxPreviously = Transaction.purchaseOf(nflx, LocalDateTime.now().minusDays(2), growthInvesting, 100.0f);
@@ -128,15 +138,15 @@ public class InsertSampleData implements CommandLineRunner {
 		buy.setShareQuantity(100.0f);
 		this.accountService.buyAndReportRemainingCash(buy);
 		Set<StockHolding> holdings = this.accountService.getCurrentHoldings(valueInvesting);
-		System.out.println("Before selling MSFT: ");
-		holdings.forEach(h -> System.out.println(h.toString()));
+		log.info("Before selling MSFT: ");
+		holdings.forEach(h -> log.info(h.toString()));
 		this.accountService.sellAndReportRemaining(msft, 40.0f, valueInvesting);
-		System.out.println("After selling MSFT: ");
+		log.info("After selling MSFT: ");
 		valueInvesting = this.accountService.findById(valueInvesting.getId());
-		System.out.println("valueInvesting cash immediately after selling MSFT: " + 
+		log.info("valueInvesting cash immediately after selling MSFT: " + 
 				valueInvesting.getCurrentCash());
 		holdings = this.accountService.getCurrentHoldings(valueInvesting);
-		holdings.forEach(h -> System.out.println(h.toString()));
+		holdings.forEach(h -> log.info(h.toString()));
 		IssuingCompany ibmCorp = this.issuingCompanyService.getInstanceFor("International Business Machines");
 		Ticker ibm = this.tickerService.getInstanceFor("IBM", ibmCorp, Exchange.NYSE);
 //		Transaction ibmPreviously = Transaction.purchaseOf(ibm, LocalDateTime.now().minusDays(1), valueInvesting, 50.0f);
@@ -145,20 +155,20 @@ public class InsertSampleData implements CommandLineRunner {
 		buy.setAccountId(valueInvesting.getId());
 		buy.setSymbol("IBM");
 		buy.setShareQuantity(50.0f);
-		System.out.println("Cash in valueInvesting before IBM purchase: "+ valueInvesting.getCurrentCash());
+		log.info("Cash in valueInvesting before IBM purchase: "+ valueInvesting.getCurrentCash());
 		Float cashAfterIBMBuy = this.accountService.buyAndReportRemainingCash(buy);
-		System.out.println("cash after IBM purchase -- returned from buyAndReportRemaining: " + cashAfterIBMBuy);
+		log.info("cash after IBM purchase -- returned from buyAndReportRemaining: " + cashAfterIBMBuy);
 		valueInvesting = this.accountService.findById(valueInvesting.getId());
-		System.out.println("Cash in valueInvesting after IBM purchase: "+ valueInvesting.getCurrentCash());
+		log.info("Cash in valueInvesting after IBM purchase: "+ valueInvesting.getCurrentCash());
 		this.accountService.sellAndReportRemaining(ibm, 25.0f, valueInvesting);
-		System.out.println("After buying 50 shares of IBM and then immediately selling 25: ");
+		log.info("After buying 50 shares of IBM and then immediately selling 25: ");
 		valueInvesting = this.accountService.findById(valueInvesting.getId());
-		System.out.println("valueInvesting cash immediately after selling half of IBM: " + 
+		log.info("valueInvesting cash immediately after selling half of IBM: " + 
 				valueInvesting.getCurrentCash());
 		holdings = this.accountService.getCurrentHoldings(valueInvesting);
-		holdings.forEach(h -> System.out.println(h.toString()));
+		holdings.forEach(h -> log.info(h.toString()));
 		Set<HoldingView> hViews = this.accountService.getHoldingsView("valueAccount");
-		hViews.forEach(v -> System.out.println(v.toString()));
+		hViews.forEach(v -> log.info(v.toString()));
 	}
 	
 	

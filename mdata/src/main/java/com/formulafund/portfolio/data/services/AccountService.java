@@ -6,6 +6,9 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.formulafund.portfolio.data.commands.BuyCommand;
 import com.formulafund.portfolio.data.model.Account;
 import com.formulafund.portfolio.data.model.StockHolding;
@@ -14,7 +17,12 @@ import com.formulafund.portfolio.data.model.Transaction;
 import com.formulafund.portfolio.data.model.ApplicationUser;
 import com.formulafund.portfolio.data.view.HoldingView;
 
+
+
+
 public interface AccountService extends CrudService<Account> {
+	
+	Logger log = LoggerFactory.getLogger(AccountService.class);
 
 	Float getCurrentHoldingOf(Ticker aTicker, Account anAccount);
 	Set<StockHolding> getCurrentHoldings(Account anAccount);
@@ -136,7 +144,7 @@ public interface AccountService extends CrudService<Account> {
 			try {
 				hv.setCompanyName(h.getTicker().getIssuingCompany().getFullName());
 			} catch (Exception e) {
-				System.out.println("caught an exception when setting the issuing company name -- ignoring");
+				log.debug("caught an exception when setting the issuing company name -- ignoring");
 			}
 			hv.setShareQuantity(h.getShareQuantity());
 			holdingViews.add(hv);

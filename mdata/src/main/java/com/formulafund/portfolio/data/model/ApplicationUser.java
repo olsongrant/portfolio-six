@@ -29,6 +29,7 @@ public class ApplicationUser extends BaseEntity {
 	private String emailAddress;
 	private String handle;
 	private String password;
+	private String socialPlatformId;
 	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
 	private Set<Account> accounts = new HashSet<>();
