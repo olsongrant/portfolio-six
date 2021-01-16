@@ -49,19 +49,6 @@ public class HoldingsController {
 		return "holdings/show";
 	}
 
-	@RequestMapping("/holdings/{id}/buy")
-	public String provideBuyForm(@PathVariable String id, Model model) {
-		log.debug("provide purchase form for account " + id);
-		BuyCommand buy = new BuyCommand();
-		buy.setAccountId(id);
-		model.addAttribute("buy", buy);
-		Long idLong = Long.valueOf(id);
-		Account account = this.accountService.findById(idLong);
-		model.addAttribute("account", account);
-		model.addAttribute("user", account.getUser());
-		Set<HoldingView> holdingSet = this.accountService.getHoldingsView(idLong);
-		model.addAttribute("holdingSet", holdingSet);
-		return "transaction/purchase";
-	}
+
 	
 }

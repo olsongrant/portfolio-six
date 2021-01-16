@@ -8,6 +8,7 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.transaction.Transactional;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -16,6 +17,7 @@ import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -76,18 +78,7 @@ public class UserController {
 		return "user/show";
 	}
 	
-	@RequestMapping("/user/{id}/addaccount")
-	public String provideAddAccountForm(@PathVariable String id, Model model) {
-		log.debug("provide Add Account Form for user id " + id);
-		Long idLong = Long.valueOf(id);
-		ApplicationUser user = this.userService.findById(idLong);
-		AddAccountCommand command = new AddAccountCommand();
-		command.setId(id);
-		command.setUserFullName(user.getFullName());
-		command.setUserHandle(user.getHandle());
-		model.addAttribute("addaccount", command);
-		return "user/accountadd";
-	}
+
 	
 	@RequestMapping(value="/logout",method = RequestMethod.GET)
     public String logout(Principal principal, HttpServletRequest request){
@@ -110,10 +101,14 @@ public class UserController {
 	
 	@Transactional
     @PostMapping("/register")
-    public String registerUser(@ModelAttribute RegisterUserCommand command){
+    public String registerUser(@Valid @ModelAttribute("user") RegisterUserCommand command, 
+    						   BindingResult bindingResult){
     	
     	log.info("UserController::registerUser");
     	log.info("RegisterUserCommand: " + command);
+    	if (bindingResult.hasErrors()) {
+    		return "user/registration";
+    	}
     	ApplicationUser user = this.userService.registerUser(command);
     	String destination = "redirect:/user/" + user.getId() + "/show";
         return destination;
@@ -121,10 +116,14 @@ public class UserController {
 	
 	@Transactional
     @PostMapping("/socialregister")
-    public String registerSocialUser(@ModelAttribute SocialUserCommand command){
+    public String registerSocialUser(@Valid @ModelAttribute("socialuser") SocialUserCommand command,
+    								 BindingResult bindingResult){
     	
     	log.info("UserController::registerSocialUser");
     	log.info("SocialUserCommand: " + command);
+    	if (bindingResult.hasErrors()) {
+    		return "register/social";
+    	}
     	ApplicationUser user = this.userService.registerSocialUser(command);
     	String destination = "redirect:/oauth2/authorize-client/facebook";
         return destination;

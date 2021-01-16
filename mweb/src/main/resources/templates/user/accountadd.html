@@ -21,7 +21,7 @@
 <div class="container-fluid" style="margin-top: 20px">
     <div class="row">
         <div class="col-md-6 col-md-offset-3">
-            <form  th:object="${addaccount}" th:action="@{/account/}" method="post">
+            <form role="form" data-toggle="validator" th:object="${addaccount}" th:action="@{/account/}" method="post">
                 <input type="hidden" th:field="*{id}"/>
                 <div class="panel-group">
                     <div class="panel panel-primary">
@@ -30,9 +30,14 @@
                         </div>
                         <div class="panel-body">
                             <div class="row">
-                                <div class="col-md-3 form-group">
+                                <div class="col-md-9 form-group">
                                     <label>Account Name:</label>
-                                    <input type="text" class="form-control" th:field="*{accountName}"/>
+                                    <input type="text" class="form-control" 
+                                    data-error="An account name must be between 4 and 20 characters." 
+                                    maxlength="20" minlength="4" id="inputAccountName" placeholder="Choose an account name"
+                                    th:field="*{accountName}" required/>
+                                    <div class="help-block with-errors"></div>
+                                    <label th:if="${#fields.hasErrors('accountName')}" th:errors="*{accountName}">Name Error</label>
                                 </div>
                             </div>
 						</div>

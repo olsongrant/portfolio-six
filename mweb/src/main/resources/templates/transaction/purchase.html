@@ -42,7 +42,7 @@
 <div class="container-fluid" style="margin-top: 20px">
     <div class="row">
         <div class="col-md-6 col-md-offset-3">
-            <form  th:object="${buy}" th:action="@{/purchase/}" method="post">
+            <form role="form" data-toggle="validator" th:object="${buy}" th:action="@{/purchase/}" method="post">
                 <input type="hidden" th:field="*{accountId}"/>
                 <div class="panel-group">
                     <div class="panel panel-primary">
@@ -64,8 +64,10 @@
                                 </div>
                                 <div class="col-md-3 form-group">
                                     <label>Share Quantity:</label>
-                                    <input type="text" class="form-control" th:field="*{shareQuantity}"/>
+                                    <input type="text" class="form-control" name="quantity" th:field="*{shareQuantity}" placeholder="10" required/>
+                                    <div class="help-block with-errors"></div>
                                 </div>
+                                
                             </div>
 						</div>
                     <button type="submit" class="btn btn-primary">Submit</button>

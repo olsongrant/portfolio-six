@@ -1,5 +1,7 @@
 package com.formulafund.portfolio.web.commands;
 
+import javax.validation.constraints.NotEmpty;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -14,6 +16,8 @@ public class AddAccountCommand {
 		return "AddAccountCommand [id=" + id + ", accountName=" + accountName + ", userFullName=" + userFullName
 				+ ", userHandle=" + userHandle + "]";
 	}
+	
+	@NotEmpty
 	private String accountName;
 	private String userFullName;
 	private String userHandle;
