@@ -14,7 +14,7 @@ import com.formulafund.portfolio.data.repositories.TickerRepository;
 import com.formulafund.portfolio.data.services.TickerService;
 
 @Service
-@Profile("springdatajpa")
+@Profile({"mysqldev", "h2dev", "mysqlprod"})
 public class SDJPATickerService implements TickerService {
 	
 	private TickerRepository tickerRepository;

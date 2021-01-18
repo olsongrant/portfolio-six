@@ -32,16 +32,16 @@ public class Account extends BaseEntity {
     @JoinColumn(name = "user_id")	
 	private ApplicationUser user;
     
+//    @ManyToOne
+//    @JoinColumn(name = "league_id")
+//    private League league;
+    
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "account")
 	private Set<Transaction> transactions = new HashSet<>();
 
 	@Transient
 	private transient Set<StockHolding> holdings = new HashSet<>();
 	
-//	@OneToMany(cascade = CascadeType.ALL, mappedBy = "account")
-//	private Set<Portfolio> portfolios = new HashSet<>();
-	
-
 	/**
 	 * 
 	 */

@@ -12,7 +12,7 @@ import com.formulafund.portfolio.data.repositories.TransactionRepository;
 import com.formulafund.portfolio.data.services.TransactionService;
 
 @Service
-@Profile("springdatajpa")
+@Profile({"mysqldev", "h2dev", "mysqlprod"})
 public class SDJPATransactionService implements TransactionService {
 	
 	private TransactionRepository transactionRepository;

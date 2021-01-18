@@ -17,7 +17,7 @@ import com.formulafund.portfolio.data.services.TickerService;
 import com.formulafund.portfolio.data.services.TransactionService;
 
 @Service
-@Profile("springdatajpa")
+@Profile({"mysqldev", "h2dev", "mysqlprod"})
 public class SDJPAAccountService implements AccountService {
 	private AccountRepository accountRepository;
 	private TransactionService transactionService;

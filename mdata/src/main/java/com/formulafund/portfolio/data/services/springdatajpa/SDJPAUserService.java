@@ -15,7 +15,7 @@ import com.formulafund.portfolio.data.services.PasswordEncoderService;
 import com.formulafund.portfolio.data.services.UserService;
 
 @Service
-@Profile("springdatajpa")
+@Profile({"mysqldev", "h2dev", "mysqlprod"})
 public class SDJPAUserService implements UserService {
 	
 	private UserRepository userRepository;
