@@ -1,5 +1,6 @@
 package com.formulafund.portfolio.data.model;
 
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -14,10 +15,10 @@ public class VerificationToken extends BaseEntity {
     private String token;
 
     @OneToOne(targetEntity = ApplicationUser.class, fetch = FetchType.EAGER)
-    @JoinColumn(nullable = false, name = "user_id", foreignKey = @ForeignKey(name = "FK_VERIFY_USER"))
+    @JoinColumn(nullable = false, name = "user_id")
     private ApplicationUser user;
 
-    private Date expiryDate;
+    private LocalDateTime expiryDate;
 
     public VerificationToken() {
         super();
@@ -58,19 +59,16 @@ public class VerificationToken extends BaseEntity {
         this.user = user;
     }
 
-    public Date getExpiryDate() {
+    public LocalDateTime getExpiryDate() {
         return expiryDate;
     }
 
-    public void setExpiryDate(final Date expiryDate) {
+    public void setExpiryDate(final LocalDateTime expiryDate) {
         this.expiryDate = expiryDate;
     }
 
-    private Date calculateExpiryDate(final int expiryTimeInMinutes) {
-        final Calendar cal = Calendar.getInstance();
-        cal.setTimeInMillis(new Date().getTime());
-        cal.add(Calendar.MINUTE, expiryTimeInMinutes);
-        return new Date(cal.getTime().getTime());
+    private LocalDateTime calculateExpiryDate(final int expiryTimeInMinutes) {
+    	return LocalDateTime.now().plusMinutes(expiryTimeInMinutes);
     }
 
     public void updateToken(final String token) {

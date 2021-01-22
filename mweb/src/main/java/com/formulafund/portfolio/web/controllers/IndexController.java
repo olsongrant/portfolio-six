@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.core.ResolvableType;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -13,6 +15,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -21,6 +24,7 @@ import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+import org.springframework.security.web.WebAttributes;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -63,7 +67,25 @@ public class IndexController {
 	}
 	
 	@RequestMapping({"/login", "login"})
-	public String getLogin(Model model) {
+	public String getLogin(Model model, HttpServletRequest request) {
+		AuthenticationException authEx = (AuthenticationException) request.getSession()
+										.getAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
+		if (authEx != null) {
+			String exceptionString = authEx.getMessage();
+	        model.addAttribute("previousAttemptMessage", exceptionString);
+	        String exceptionClassName = authEx.getClass().getName();
+	        log.info("AuthenticationException class in getLogin(): " + exceptionClassName);
+	        switch (exceptionClassName) {
+	        case "org.springframework.security.authentication.BadCredentialsException":
+	        case "org.springframework.security.authentication.CredentialsExpiredException":
+	        	model.addAttribute("providePasswordReset", Boolean.TRUE);
+	        	break;
+	        case "org.springframework.security.authentication.DisabledException":
+	        	model.addAttribute("provideResendOption", Boolean.TRUE);
+	        	break;
+	        default:
+	        }
+		}
         Iterable<ClientRegistration> clientRegistrations = null;
         ResolvableType type = ResolvableType.forInstance(clientRegistrationRepository)
             .as(Iterable.class);
@@ -72,6 +94,7 @@ public class IndexController {
         }
 
         clientRegistrations.forEach(registration -> oauth2AuthenticationUrls.put(registration.getClientName(), authorizationRequestBaseUri + "/" + registration.getRegistrationId()));
+
         model.addAttribute("urls", oauth2AuthenticationUrls);
 		return "login";
 	}

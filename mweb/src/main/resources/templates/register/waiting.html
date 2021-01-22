@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'home')}">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Portfolios Application: Welcome</title>
+</head>
+<body>
+<p th:if="${hasInfo}" th:text="${info}">informational message</p>
+<a href="#" th:href="@{'/'}">Home</a>
+<h1>Registered -- waiting on email confirmation </h1>
+
+
+
+
+</body>
+</html>

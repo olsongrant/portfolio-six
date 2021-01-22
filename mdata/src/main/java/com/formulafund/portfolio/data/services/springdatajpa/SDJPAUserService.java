@@ -1,5 +1,6 @@
 package com.formulafund.portfolio.data.services.springdatajpa;
 
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -10,9 +11,13 @@ import org.springframework.stereotype.Service;
 import com.formulafund.portfolio.data.commands.RegisterUserCommand;
 import com.formulafund.portfolio.data.commands.SocialUserCommand;
 import com.formulafund.portfolio.data.model.ApplicationUser;
+import com.formulafund.portfolio.data.model.PasswordResetToken;
+import com.formulafund.portfolio.data.model.VerificationToken;
 import com.formulafund.portfolio.data.repositories.UserRepository;
 import com.formulafund.portfolio.data.services.PasswordEncoderService;
+import com.formulafund.portfolio.data.services.PasswordResetTokenService;
 import com.formulafund.portfolio.data.services.UserService;
+import com.formulafund.portfolio.data.services.VerificationTokenService;
 
 @Service
 @Profile({"mysqldev", "h2dev", "mysqlprod"})
@@ -22,10 +27,17 @@ public class SDJPAUserService implements UserService {
 	
 	private PasswordEncoderService encoderService;
 	
+	private VerificationTokenService verificationTokenService;
+	private PasswordResetTokenService passwordTokenService;
+	
 	public SDJPAUserService(UserRepository uRepository,
-							PasswordEncoderService anEncoderService) {
+							PasswordEncoderService anEncoderService,
+							VerificationTokenService aVerificationTokenService,
+							PasswordResetTokenService aPasswordResetTokenService) {
 		this.userRepository = uRepository;
 		this.encoderService = anEncoderService;
+		this.verificationTokenService = aVerificationTokenService;
+		this.passwordTokenService = aPasswordResetTokenService;
 	}
 
 	@Override
@@ -45,13 +57,26 @@ public class SDJPAUserService implements UserService {
 	}
 
 	@Override
-	public void delete(ApplicationUser object) {
-		this.userRepository.delete(object);
+	public void delete(ApplicationUser aUser) {
+        final VerificationToken verificationToken = this.verificationTokenService.findByUser(aUser);
+
+        if (verificationToken != null) {
+            this.verificationTokenService.delete(verificationToken);
+        }
+
+        final PasswordResetToken passwordToken = this.passwordTokenService.findByUser(aUser);
+
+        if (passwordToken != null) {
+            this.passwordTokenService.delete(passwordToken);
+        }	
+		
+		this.userRepository.delete(aUser);
 	}
 
 	@Override
 	public void deleteById(Long id) {
-		this.userRepository.deleteById(id);
+		ApplicationUser aUser = this.findById(id);
+		this.delete(aUser);
 	}
 
 	@Override
@@ -66,4 +91,18 @@ public class SDJPAUserService implements UserService {
 		aUser = this.save(aUser);
 		return aUser;
 	}
+	
+    @Override
+    public void changeUserPassword(final ApplicationUser user, final String password) {
+        user.setPassword(this.encoderService.encode(password));
+        userRepository.save(user);
+    }
+    
+
+
+    @Override
+    public Optional<ApplicationUser> getUserByPasswordResetToken(final String token) {
+        return Optional.ofNullable(this.passwordTokenService.findByToken(token).getUser());
+    }
+	
 }

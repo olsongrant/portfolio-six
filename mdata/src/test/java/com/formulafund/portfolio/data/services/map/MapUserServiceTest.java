@@ -13,18 +13,21 @@ import org.junit.jupiter.api.Test;
 
 import com.formulafund.portfolio.data.model.ApplicationUser;
 import com.formulafund.portfolio.data.services.BCryptEncoderService;
+import com.formulafund.portfolio.data.services.PasswordResetTokenService;
 import com.formulafund.portfolio.data.services.UserService;
 
 class MapUserServiceTest {
 	
 	UserService userService;
+	PasswordResetTokenService passwordResetTokenService;
 	HashMap<Long, ApplicationUser> tracker = new HashMap<>();
 
 	@BeforeEach
 	void setUp() throws Exception {
 		
 		BCryptEncoderService encoderService = new BCryptEncoderService();
-		this.userService = new MapUserService(encoderService);
+		this.passwordResetTokenService = new MapPasswordResetTokenService();
+		this.userService = new MapUserService(encoderService, this.passwordResetTokenService);
 		ApplicationUser guy = ApplicationUser.with("Guy", "Smiley", "guy");
 		ApplicationUser janie = ApplicationUser.with("Janie", "Lane", "janie");
 		this.userService.save(guy);

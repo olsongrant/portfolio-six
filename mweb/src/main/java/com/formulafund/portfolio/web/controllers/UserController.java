@@ -1,7 +1,9 @@
 package com.formulafund.portfolio.web.controllers;
 
+import java.io.UnsupportedEncodingException;
 import java.security.Principal;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -11,12 +13,16 @@ import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.MessageSource;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -24,7 +30,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.formulafund.portfolio.data.commands.BuyCommand;
 import com.formulafund.portfolio.data.commands.RegisterUserCommand;
@@ -32,12 +40,15 @@ import com.formulafund.portfolio.data.commands.SocialUserCommand;
 import com.formulafund.portfolio.data.model.Account;
 import com.formulafund.portfolio.data.model.ApplicationUser;
 import com.formulafund.portfolio.data.model.FacebookUser;
+import com.formulafund.portfolio.data.model.VerificationToken;
 import com.formulafund.portfolio.data.services.AccountService;
 import com.formulafund.portfolio.data.services.UserService;
+import com.formulafund.portfolio.data.services.VerificationTokenService;
 import com.formulafund.portfolio.web.commands.AccountCommand;
 import com.formulafund.portfolio.web.commands.AddAccountCommand;
 import com.formulafund.portfolio.web.commands.UserCommand;
 import com.formulafund.portfolio.web.converters.UserToUserCommand;
+import com.formulafund.portfolio.web.security.CustomAuthenticationProvider;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -47,12 +58,18 @@ public class UserController {
 	  
 	private AccountService accountService;
 	private UserService userService;
+	private ApplicationEventPublisher eventPublisher;
+	private VerificationTokenService verificationTokenService;
 		
 	public UserController(AccountService aService, 
 						  UserService uService,
-						  MessageSource mSource) {
+						  MessageSource mSource,
+						  ApplicationEventPublisher anEventPublisher,
+						  VerificationTokenService aVerificationTokenService) {
 		this.accountService = aService;
 		this.userService = uService;
+		this.eventPublisher = anEventPublisher;
+		this.verificationTokenService = aVerificationTokenService;
 	}
 	
 	@RequestMapping({"user", "user/index"})
@@ -102,15 +119,22 @@ public class UserController {
 	@Transactional
     @PostMapping("/register")
     public String registerUser(@Valid @ModelAttribute("user") RegisterUserCommand command, 
-    						   BindingResult bindingResult){
+    						   BindingResult bindingResult, HttpServletRequest request, Model model){
     	
     	log.info("UserController::registerUser");
     	log.info("RegisterUserCommand: " + command);
     	if (bindingResult.hasErrors()) {
     		return "user/registration";
     	}
+    	String requestOrigin = request.getHeader("origin");
     	ApplicationUser user = this.userService.registerUser(command);
-    	String destination = "redirect:/user/" + user.getId() + "/show";
+    	this.eventPublisher.publishEvent(new OnRegistrationCompleteEvent(user, 
+    			request.getLocale(),
+    			requestOrigin));
+//    	String destination = "redirect:/user/" + user.getId() + "/show";
+		model.addAttribute("hasInfo", true);
+		model.addAttribute("info", "You should get an email message from us momentarily. Invoke the link in that email message to finish the registration process.");
+    	String destination = "register/waiting";
         return destination;
     }
 	
@@ -127,5 +151,37 @@ public class UserController {
     	ApplicationUser user = this.userService.registerSocialUser(command);
     	String destination = "redirect:/oauth2/authorize-client/facebook";
         return destination;
+    }
+	
+    @GetMapping("/registrationConfirm")
+    public String confirmRegistration(final HttpServletRequest request, Model model, @RequestParam("token") final String token) throws UnsupportedEncodingException {
+        Locale locale = request.getLocale();
+        model.addAttribute("lang", locale.getLanguage());
+        final String result = this.verificationTokenService.validateVerificationToken(token, this.userService);
+        if (result.equals("valid")) {
+        	VerificationToken vToken = this.verificationTokenService.findByToken(token);
+        	
+            final ApplicationUser user = vToken.getUser();
+            // if (user.isUsing2FA()) {
+            // model.addAttribute("qr", userService.generateQRUrl(user));
+            // return "redirect:/qrcode.html?lang=" + locale.getLanguage();
+            // }
+            Authentication authentication = 
+            		CustomAuthenticationProvider.createUsernamePasswordAuthenticationToken(user.getCredentials(), user);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            model.addAttribute("messageKey", "message.accountVerified");
+    		log.info("registration email was confirmed");
+    		model.addAttribute("hasInfo", true);
+    		model.addAttribute("info", "Your email address has been verified. Your account is enabled. You are logged in.");
+    		model.addAttribute("userSet", this.userService.findAll());
+            return "index";
+        }
+
+        model.addAttribute("messageKey", "auth.message." + result);
+        model.addAttribute("expired", "expired".equals(result));
+        model.addAttribute("token", token);
+   		model.addAttribute("hasInfo", true);
+		model.addAttribute("info", "Your email address confirmation did not process successfully.");
+        return "badUser";
     }
 }

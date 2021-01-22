@@ -23,6 +23,7 @@ import com.formulafund.portfolio.data.services.TickerService;
 import com.formulafund.portfolio.data.services.TransactionService;
 import com.formulafund.portfolio.data.services.UserService;
 import com.formulafund.portfolio.data.view.HoldingView;
+import com.formulafund.portfolio.web.controllers.RegistrationListener;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -36,6 +37,7 @@ public class InsertSampleData implements CommandLineRunner {
 	private TransactionService transactionService;
 	private IssuingCompanyService issuingCompanyService;
 	private PasswordEncoderService encoderService;
+	private RegistrationListener registrationListener;
 
 	
 	public InsertSampleData(
@@ -44,13 +46,15 @@ public class InsertSampleData implements CommandLineRunner {
 			TickerService tService,
 			TransactionService txnService,
 			IssuingCompanyService icService,
-			PasswordEncoderService anEncoderService) {
+			PasswordEncoderService anEncoderService,
+			RegistrationListener aRegistrationListener) {
 		this.userService = uService;
 		this.accountService = aService;
 		this.tickerService = tService;
 		this.transactionService = txnService;
 		this.issuingCompanyService = icService;
 		this.encoderService = anEncoderService;
+		this.registrationListener = aRegistrationListener;
 	}
 
 	@Override
@@ -59,8 +63,13 @@ public class InsertSampleData implements CommandLineRunner {
 		if (tickerSet.size() < 1) {
 			insertSampleInfo();
 		}
+//		this.sendTestEmail();
 	}
 
+	protected void sendTestEmail() {
+		this.registrationListener.sendTestEmail();
+	}
+	
 	@Transactional
 	protected void insertSampleInfo() {
 		log.debug("InsertSampleData::run");
@@ -87,6 +96,7 @@ public class InsertSampleData implements CommandLineRunner {
 			grantcine.setHandle("grantcine");
 			grantcine.setEmailAddress("grant@address.com");
 			grantcine.setPassword(this.encoderService.encode("grantcine"));
+			grantcine.setEnabled(true);
 			this.userService.save(grantcine);
 			log.info("Saved a Grantcine user.");
 			Account valueInvesting = Account.with("valueAccount", grantcine);
@@ -168,6 +178,7 @@ public class InsertSampleData implements CommandLineRunner {
 			ApplicationUser daffy = ApplicationUser.with("Daffy", "Duck", "daffy");
 			daffy.setEmailAddress("daffy@address.com");
 			daffy.setPassword(this.encoderService.encode("ducksrule"));
+			daffy.setEnabled(true);
 			this.userService.save(daffy);		
 			Account dayTrader = Account.with("dayTrades", daffy);
 			this.accountService.save(dayTrader);

@@ -1,0 +1,30 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'user')}">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Resend Verification</title>
+</head>
+<body>
+<div class="container mt-5">
+	<div class="card">
+		<h5 class="card-header text-center" th:text="#{label.form.title}">
+			form
+			</h5>
+			<div class="card-body">
+				<form role="form" data-toggle="validator" th:object="${user}"
+					th:action="@{/user/verifyemail}" method="POST" enctype="utf8">
+
+					<div class="form-group">
+						<label th:text="#{label.user.email}">email</label> <input
+							class="form-control" id="inputEmail" placeholder="me@emailprovider.com"
+							type="email" th:field="*{email}" required />
+					<div class="help-block with-errors"></div>
+						<p th:each="error : ${#fields.errors('email')}" th:text="${error}">Validation
+							error</p>
+					</div>
+					<button type="submit" class="btn btn-primary btn-block">Resend Verification</button>
+				</form>
+			</div>
+	</div>
+</div>
+
+</body>

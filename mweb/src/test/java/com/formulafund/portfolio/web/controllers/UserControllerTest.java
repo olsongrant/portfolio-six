@@ -11,6 +11,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.MessageSource;
 import org.springframework.ui.Model;
 
@@ -18,6 +19,7 @@ import com.formulafund.portfolio.data.model.Account;
 import com.formulafund.portfolio.data.model.ApplicationUser;
 import com.formulafund.portfolio.data.services.AccountService;
 import com.formulafund.portfolio.data.services.UserService;
+import com.formulafund.portfolio.data.services.VerificationTokenService;
 
 class UserControllerTest {
 	@Mock
@@ -35,6 +37,12 @@ class UserControllerTest {
 	
 	@Mock
 	MessageSource messageSource;
+	
+	@Mock
+	ApplicationEventPublisher eventPublisher;
+	
+	@Mock
+	VerificationTokenService verificationTokenService;
 
 	@BeforeEach
 	void setUp() throws Exception {
@@ -42,7 +50,9 @@ class UserControllerTest {
 		controller = new UserController(
 				this.accountService, 
 				this.userService,
-				this.messageSource);
+				this.messageSource,
+				this.eventPublisher,
+				this.verificationTokenService);
 	}
 
 	@AfterEach

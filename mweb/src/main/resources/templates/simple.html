@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'user')}">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Operation Result</title>
+</head>
+<body>
+<h3 th:text="${resultmessage}">The operation you requested has succeeded.</h3>
+
+	<div th:if="${provideRegisterLink}">
+		<a href="#" th:href="@{'/user/registration'}">Register</a>
+	</div>
+	<div th:if="${providePasswordReset}">
+		<a href="#" th:href="@{'/user/passwordreset'}">Send Password Reset Email</a>
+	</div>
+	<div th:if="${provideResendOption}">
+		<a href="#" th:href="@{'/resendverification'}">Resend the Registration Verification Email</a>
+	</div>
+</body>
+</html>

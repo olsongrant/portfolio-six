@@ -7,10 +7,14 @@ import com.formulafund.portfolio.data.commands.RegisterUserCommand;
 import com.formulafund.portfolio.data.commands.SocialUserCommand;
 import com.formulafund.portfolio.data.model.ApplicationUser;
 import com.formulafund.portfolio.data.model.FacebookUser;
+import com.formulafund.portfolio.data.model.PasswordResetToken;
+
 
 public interface UserService extends CrudService<ApplicationUser> {
 
 	ApplicationUser registerUser(RegisterUserCommand command);
+
+
 
 	ApplicationUser registerSocialUser(SocialUserCommand socialUser);
 
@@ -33,6 +37,7 @@ public interface UserService extends CrudService<ApplicationUser> {
 		user.setLastName(command.getLastName());
 		user.setHandle(command.getHandle());
 		user.setSocialPlatformId(command.getSocialPlatformId());
+		user.setEnabled(true);
 		user = this.save(user);
 		return user;
 	}
@@ -43,5 +48,8 @@ public interface UserService extends CrudService<ApplicationUser> {
 				.filter(u -> emailAddress.equalsIgnoreCase(u.getEmailAddress())).findAny();
 		return potentialUser;
 	}
+	
+	public void changeUserPassword(final ApplicationUser user, final String password);
 
+    public Optional<ApplicationUser> getUserByPasswordResetToken(final String token); 
 }

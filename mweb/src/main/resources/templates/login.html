@@ -8,8 +8,8 @@
 <body>
 
 	<h1>Log in to the Portfolios Application!</h1>
-
-	<div th:if="${param.error}">Invalid username and password.</div>
+	<div th:if="${previousAttemptMessage}" th:text="${previousAttemptMessage}">Previous attempt unsuccessful.</div>
+	<div th:if="${param.error}" th:text="${param.error}">Invalid username and password.</div>
 	<div th:if="${param.logout}">You have been logged out.</div>
 	<form th:action="@{/login}" method="post">
 		<div>
@@ -39,6 +39,12 @@
 				</p>
 			</div>
 		</div>
+	</div>
+	<div th:if="${providePasswordReset}">
+		<a href="#" th:href="@{'/user/passwordreset'}">Send Password Reset Email</a>
+	</div>
+	<div th:if="${provideResendOption}">
+		<a href="#" th:href="@{'/resendverification'}">Resend the Registration Verification Email</a>
 	</div>
 </div>
 </body>

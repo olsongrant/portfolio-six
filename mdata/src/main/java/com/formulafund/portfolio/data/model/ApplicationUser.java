@@ -12,6 +12,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.HashMap;
 import java.util.HashSet;
 
 @Entity
@@ -30,6 +31,7 @@ public class ApplicationUser extends BaseEntity {
 	private String handle;
 	private String password;
 	private String socialPlatformId;
+	private boolean enabled;
 	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
 	private Set<Account> accounts = new HashSet<>();
@@ -51,6 +53,13 @@ public class ApplicationUser extends BaseEntity {
 	public String toString() {
 		log.debug("in User::toString");
 		return this.getEmailAddress();
+	}
+
+	public Object getCredentials() {
+		HashMap<String, String> map = new HashMap<>();
+		map.put("username", this.getEmailAddress());
+		map.put("password", this.getPassword());
+		return map;
 	}
 	
 	

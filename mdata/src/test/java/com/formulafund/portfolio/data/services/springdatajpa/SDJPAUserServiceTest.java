@@ -18,12 +18,20 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.formulafund.portfolio.data.model.ApplicationUser;
 import com.formulafund.portfolio.data.repositories.UserRepository;
+import com.formulafund.portfolio.data.services.PasswordResetTokenService;
+import com.formulafund.portfolio.data.services.VerificationTokenService;
 
 @ExtendWith(MockitoExtension.class)
 class SDJPAUserServiceTest {
 	
 	@Mock
 	private UserRepository userRepository;
+	
+	@Mock
+	private VerificationTokenService verificationTokenService;
+	
+	@Mock
+	private PasswordResetTokenService passwordTokenService;
 	
 	@InjectMocks
 	SDJPAUserService userService;
@@ -75,7 +83,7 @@ class SDJPAUserServiceTest {
 	void testDeleteById() {
 		Long anId = 10L;
 		this.userService.deleteById(anId);
-		verify(this.userRepository).deleteById(anyLong());
+		verify(this.userRepository).delete(any());
 	}
 
 }

@@ -31,6 +31,8 @@ import org.springframework.security.oauth2.client.web.AuthorizationRequestReposi
 import org.springframework.security.oauth2.client.web.HttpSessionOAuth2AuthorizationRequestRepository;
 import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.security.web.authentication.DelegatingAuthenticationFailureHandler;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -55,7 +57,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 		log.info("WebSecurityConfig::configure invoked.");
-		auth.userDetailsService(this.userDetailsService);
+//		auth.userDetailsService(this.userDetailsService);
 		auth.authenticationProvider(this.authenticationProvider);
 	}
 	
@@ -64,31 +66,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	    return new BCryptPasswordEncoder(); 
 	}
 	
-//	@Bean
-//	@Override
-//	protected UserDetailsService oldUserDetailsService() {
-//		UserDetails user1 =
-//				 User.withDefaultPasswordEncoder()
-//					.username("grantcine")
-//					.password("grantcine")
-//					.roles("USER")
-//					.build();
-//		
-//		UserDetails user2 = User.withDefaultPasswordEncoder()
-//				.username("daffy")
-//				.password("ducksrule")
-//				.roles("USER")
-//				.build();
-//
-//		return new InMemoryUserDetailsManager(user1, user2);
-//	}
-	
-//	@Bean
-//	@Override
-//	protected UserDetailsService userDetailsService() {
-//		log.info("*****WebSecurityConfig::userDetailsService invoked.");
-//		return new MyUserDetailsService();
-//	}
+
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
@@ -102,6 +80,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 					"/resources/**",
 					"/webjars/**",
 					"/user/registration",
+					"/passwordreset",
+					"/user/passwordreset",
+					"/resendverification",
+					"/user/verifyemail",
+					"/user/sendreset",
+					"/user/savePassword",
+					"/user/changePassword",
+					"/registrationConfirm*",
 					"/user/**/show",
 					"/register",
 					"/login",

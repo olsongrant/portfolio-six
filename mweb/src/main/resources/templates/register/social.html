@@ -2,7 +2,7 @@
 	th:replace="~{fragments/layout :: layout (~{::body},'user')}">
 <head>
 <meta charset="UTF-8" />
-<title>User Registration</title>
+<title>User Registration via Social Media Account</title>
 </head>
 <body>
 	<div class="container mt-5">
@@ -13,32 +13,33 @@
 				<form role="form" data-toggle="validator" th:object="${socialuser}"
 					th:action="@{/socialregister}" method="POST" enctype="utf8">
 					<div class="form-group">
-						<label th:text="#{label.user.firstName}">first</label> <label
-							th:text="*{firstName}">first_name</label> <input
-							id="userFirstName" th:field="*{firstName}" type="hidden" />
+						<label th:text="#{label.user.firstName}">first</label> 
+						<label th:text="*{firstName}">first_name</label> 
+						<input id="userFirstName" th:field="*{firstName}" type="hidden" />
 						<p th:each="error: ${#fields.errors('firstName')}"
 							th:text="${error}">Validation error</p>
 					</div>
 					<div class="form-group">
-						<label th:text="#{label.user.lastName}">last</label> <label
-							th:text="*{lastName}">last_name</label> <input id="userLastName"
-							th:field="*{lastName}" type="hidden" />
+						<label th:text="#{label.user.lastName}">last</label> 
+						<label th:text="*{lastName}">last_name</label> 
+						<input id="userLastName" th:field="*{lastName}" type="hidden" />
 						<p th:each="error : ${#fields.errors('lastName')}"
 							th:text="${error}">Validation error</p>
 					</div>
 					<div class="form-group">
-						<label th:text="#{label.user.email}">email</label> <label
-							th:text="*{email}">email_address</label> <input id="userEmail"
-							th:field="*{email}" type="hidden" /> <input id="userPlatformId"
-							th:field="*{socialPlatformId}" type="hidden" />
+						<label th:text="#{label.user.email}">email</label> 
+						<label th:text="*{email}">email_address</label> 
+						<input id="userEmail" th:field="*{email}" type="hidden" /> 
+						<input id="userPlatformId" th:field="*{socialPlatformId}" type="hidden" />
 						<p th:each="error : ${#fields.errors('email')}" th:text="${error}">Validation
 							error</p>
 					</div>
 					<div class="form-group">
 						<label th:text="#{label.user.handle}">handle</label> 
-						<input class="form-control" id="inputHandle" 
-							data-error="Required is a handle/nickname of at least 4 characters" data-minlength="4"
-							placeholder="What's your handle?" th:field="*{handle}" required />
+						<input class="form-control" id="inputHandle"
+							data-error="Required is a handle/nickname of at least 4 characters"
+							data-minlength="4" placeholder="What's your handle?"
+							th:field="*{handle}" required />
 						<div class="help-block with-errors"></div>
 						<p th:each="error : ${#fields.errors('handle')}"
 							th:text="${error}">Validation error</p>
