@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -54,5 +55,9 @@ public interface VerificationTokenService extends CrudService<VerificationToken>
     public void createVerificationTokenForUser(final ApplicationUser user, final String token);
     
     public VerificationToken generateNewVerificationToken(final String existingVerificationToken);
+    
+    default String generateToken() {
+    	return UUID.randomUUID().toString();
+    }
     
 }

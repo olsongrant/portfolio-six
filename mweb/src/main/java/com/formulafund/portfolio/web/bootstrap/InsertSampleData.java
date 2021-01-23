@@ -19,9 +19,11 @@ import com.formulafund.portfolio.data.model.ApplicationUser;
 import com.formulafund.portfolio.data.services.AccountService;
 import com.formulafund.portfolio.data.services.IssuingCompanyService;
 import com.formulafund.portfolio.data.services.PasswordEncoderService;
+import com.formulafund.portfolio.data.services.PasswordResetTokenService;
 import com.formulafund.portfolio.data.services.TickerService;
 import com.formulafund.portfolio.data.services.TransactionService;
 import com.formulafund.portfolio.data.services.UserService;
+import com.formulafund.portfolio.data.services.VerificationTokenService;
 import com.formulafund.portfolio.data.view.HoldingView;
 import com.formulafund.portfolio.web.controllers.RegistrationListener;
 
@@ -38,6 +40,8 @@ public class InsertSampleData implements CommandLineRunner {
 	private IssuingCompanyService issuingCompanyService;
 	private PasswordEncoderService encoderService;
 	private RegistrationListener registrationListener;
+	private VerificationTokenService verificationTokenService;
+	private PasswordResetTokenService passwordTokenService;
 
 	
 	public InsertSampleData(
@@ -47,7 +51,9 @@ public class InsertSampleData implements CommandLineRunner {
 			TransactionService txnService,
 			IssuingCompanyService icService,
 			PasswordEncoderService anEncoderService,
-			RegistrationListener aRegistrationListener) {
+			RegistrationListener aRegistrationListener,
+			VerificationTokenService aVerificationTokenService,
+			PasswordResetTokenService aPasswordTokenService) {
 		this.userService = uService;
 		this.accountService = aService;
 		this.tickerService = tService;
@@ -55,6 +61,8 @@ public class InsertSampleData implements CommandLineRunner {
 		this.issuingCompanyService = icService;
 		this.encoderService = anEncoderService;
 		this.registrationListener = aRegistrationListener;
+		this.verificationTokenService = aVerificationTokenService;
+		this.passwordTokenService = aPasswordTokenService;
 	}
 
 	@Override
@@ -99,6 +107,7 @@ public class InsertSampleData implements CommandLineRunner {
 			grantcine.setEnabled(true);
 			this.userService.save(grantcine);
 			log.info("Saved a Grantcine user.");
+			
 			Account valueInvesting = Account.with("valueAccount", grantcine);
 			Account growthInvesting = Account.with("growthInvesting", grantcine);
 			this.accountService.save(valueInvesting);

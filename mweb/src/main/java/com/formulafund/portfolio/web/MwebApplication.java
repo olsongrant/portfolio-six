@@ -6,11 +6,13 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.support.ResourceBundleMessageSource;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 import lombok.extern.slf4j.Slf4j;
 
 @SpringBootApplication
 @ComponentScan({"com.formulafund.portfolio.data", "com.formulafund.portfolio.web"})
+@EnableScheduling
 @Slf4j
 public class MwebApplication {
 
