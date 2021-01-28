@@ -8,13 +8,9 @@
 
 <table id="accountAttributes" class="table">
 	<caption th:text="${(account.name) + ' Account Attributes'}">Account Attributes</caption>
-<!-- <tr>
-		<th style="width: 50px;"/>
-		<th style="width: 50px;"/>
-	</tr> -->
 	<tr>
 		<td>User:</td>
-		<td th:text="${user.fullName}">User Name</td>
+		<td th:text="${user.handle}">User Name</td>
 	</tr>
 	<tr>
 		<td>Original Cash:</td>
@@ -25,22 +21,30 @@
 		<td th:text="${ '$' + #numbers.formatDecimal(account.currentCash, 1, 2)}">$1.00</td>
 	</tr>
 </table>
-
+<div th:if="${allowAdd}">
+	<a href="#" th:href="@{'/holdings/' + ${account.id} + '/buy'}">Make Purchase</a>
+</div>
 <table id="holdingViews" class="table">
 <caption>Holdings List</caption>
     <tr>
         <th style="width: 100px;">Ticker Symbol</th>
         <th style="width: 100px;">Share Quantity</th>
         <th style="width: 100px;">Issuing Company</th>
+        <th th:if="${allowAdd}" style="width: 70px;">Sell</th>
     </tr>
     <tr th:each="holding : ${holdingSet}">
         <td th:text="${holding.tickerSymbol}">NULL</td>
         <td th:text="${holding.shareQuantity}">99.99</td>
         <td th:text="${holding.companyName}">Olsonsoft</td>
+        <td th:if="${allowAdd}">
+			<a href="#" th:href="@{'/holdings/' + ${account.id} + '/sell/' + ${holding.tickerSymbol}}">Sell</a>
+		</td>
     </tr>
 </table>
-<div th:if="${allowAdd}">
-	<a href="#" th:href="@{'/holdings/' + ${account.id} + '/buy'}">Make Purchase</a>
+<hr/>
+<div>
+	<a href="#" th:href="@{'/user/' + ${user.id} + '/show'}">See all accounts for this user</a>
 </div>
+
 </body>
 </html>

@@ -4,8 +4,9 @@
     <title>User Registration</title>
 </head>
 <body>
-<div class="container mt-5">
-	<div class="card">
+<div class="container-fluid" style="margin-top: 20px">
+	<div class="row">
+	<div class="col-md-6 col-md-offset-3">
 		<h5 class="card-header text-center" th:text="#{label.form.title}">
 			form
 			</h5>
@@ -63,11 +64,16 @@
 							th:field="*{matchingPassword}" required />
 						<div class="help-block with-errors"></div>
 					</div>
-					<button type="submit" class="btn btn-primary btn-block"
+					<button type="submit" class="btn-block"
 						th:text="#{label.form.submit}">submit</button>
 				</form>
 			</div>
+			<hr/>
+			<div  class="container">
+				<a th:href="@{/login.html}" th:text="#{label.form.loginLink}">login</a>
+			</div>
+		</div>
 	</div>
 </div>
-	<a th:href="@{/login.html}" th:text="#{label.form.loginLink}">login</a>
+
 </body>

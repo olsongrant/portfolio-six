@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.formulafund.portfolio.data.commands.BuyCommand;
+import com.formulafund.portfolio.data.commands.SaleCommand;
 import com.formulafund.portfolio.data.model.Account;
 import com.formulafund.portfolio.data.model.Ticker;
 import com.formulafund.portfolio.data.model.Transaction;
@@ -80,4 +81,22 @@ public class TransactionController {
 		model.addAttribute("holdingSet", holdingSet);
 		return "transaction/purchase";
 	}
+	
+	@Transactional
+    @PostMapping("sale")
+    public String sellStock(@Valid @ModelAttribute("sale") SaleCommand command,
+    							@ModelAttribute("account") Account account,
+    							@ModelAttribute("user") ApplicationUser user,
+    							BindingResult bindingResult) {
+    	String destination = "redirect:/holdings/" + command.getAccountId() + "/show";
+    	log.info("TransactionController::sellStock");
+    	log.info("SaleCommand: " + command);
+    	if (bindingResult.hasErrors()) {
+    		log.info("sellStock experienced errors");
+    		return "transaction/saleForm";
+    	}
+    	this.accountService.sellAndReportRemainingCash(command);
+        return destination;
+    }
+	
 }

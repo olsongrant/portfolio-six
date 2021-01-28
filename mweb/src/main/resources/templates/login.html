@@ -6,46 +6,81 @@
 <title>Portfolios Application: Log In</title>
 </head>
 <body>
+	<div class="container-fluid" style="margin-top: 20px">
+		<div class="row">
+			<div class="col-md-6 col-md-offset-3">
+				<h1 class="card-header">Log in to the Portfolios Application!</h1>
+				<div class="card-body">
+					<div>
+						<p th:if="${previousAttemptMessage}"
+							th:text="${previousAttemptMessage}">Previous attempt
+							unsuccessful.</p>
+						<hr />
+					</div>
+					<div th:if="${param.error}" th:text="${param.error}">
+						Invalid username and password.
+						<hr />
+					</div>
+					<div th:if="${param.logout}">
+						You have been logged out.
+						<hr />
+					</div>
+					<div>
+						<form role="form" data-toggle="validator" th:action="@{/login}" method="post">
+							<div>
+								<label> User Name (Email Address)</label>
+							</div>
+							<div class="form-group">
+								<input type="email" name="username" class="form-control"
+									placeholder="me@emailprovider.com" required />
+								<div class="help-block with-errors">
+							</div>
+							<div>
+								<label> Password: </label>
+							</div>
+							
 
-	<h1>Log in to the Portfolios Application!</h1>
-	<div th:if="${previousAttemptMessage}" th:text="${previousAttemptMessage}">Previous attempt unsuccessful.</div>
-	<div th:if="${param.error}" th:text="${param.error}">Invalid username and password.</div>
-	<div th:if="${param.logout}">You have been logged out.</div>
-	<form th:action="@{/login}" method="post">
-		<div>
-			<label> User Name (Email Address) : <input type="text"
-				name="username" />
-			</label>
-		</div>
-		<div>
-			<label> Password: <input type="password" name="password" />
-			</label>
-		</div>
-		<div>
-			<input type="submit" value="Sign In" /> <input type="hidden"
-				name="${_csrf.parameterName}" value="${_csrf.token}" />
-		</div>
+							</div>
+							<div class="form-group">
+								<input type="password" name="password" class="form-control" required />
+								<div class="help-block with-errors">
+							</div>
+							<div class="form-group">
+								<input type="submit" value="Sign In" class="btn-block"/> <input type="hidden"
+									name="${_csrf.parameterName}" value="${_csrf.token}" />
+							</div>
 
-	</form>
-	<div>
-		<a href="#" th:href="@{'/user/registration'}">Register</a>
-	</div>
-	<div class="container">
-		<div class="col-sm-3 well">
-			<h3>Log in / register with:</h3>
-			<div class="list-group">
-				<p th:each="url : ${urls}">
-					<a th:text="${url.key}" th:href="${url.value}" class="list-group-item active">Client</a>
-				</p>
+							</div>
+					</form>
+					</div>
+				</div>
+				<div>
+					<hr />
+				</div>
+				<div class="container">
+					<a href="#" th:href="@{'/user/registration'}">Register</a>
+				</div>
+				<div>
+					<hr />
+				</div>
+				<div class="container">
+					<p th:each="url : ${urls}">
+						<a th:text="${'Use ' + (url.key) + ' for sign-in'}" th:href="${url.value}">Client</a>
+					</p>
+				</div>
+				<div th:if="${providePasswordReset}">
+					<hr />
+					<a href="#" th:href="@{'/user/passwordreset'}">Send Password
+						Reset Email</a>
+				</div>
+				<div th:if="${provideResendOption}">
+					<hr />
+					<a href="#" th:href="@{'/resendverification'}">Resend the
+						Registration Verification Email</a>
+				</div>
 			</div>
 		</div>
 	</div>
-	<div th:if="${providePasswordReset}">
-		<a href="#" th:href="@{'/user/passwordreset'}">Send Password Reset Email</a>
-	</div>
-	<div th:if="${provideResendOption}">
-		<a href="#" th:href="@{'/resendverification'}">Resend the Registration Verification Email</a>
-	</div>
-</div>
+
 </body>
 </html>

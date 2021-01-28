@@ -2,36 +2,33 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'user')}">
 <head>
     <meta charset="UTF-8"/>
-    <title>Purchase Form</title>
+    <title>Sell Holding</title>
 </head>
 <body>
 
 <div class="container-fluid" style="margin-top: 20px">
     <div class="row">
         <div>
-            <form role="form" data-toggle="validator" th:object="${buy}" th:action="@{/purchase/}" method="post">
+            <form role="form" data-toggle="validator" th:object="${sale}" th:action="@{/sale/}" method="post">
                 <input type="hidden" th:field="*{accountId}"/>
                 <div class="panel-group-success">
                     <div class="panel-success panel-primary-success">
                         <div class="panel-heading-success">
-                            <h1 class="panel-title-success">Make Purchase</h1>
+                            <h1 class="panel-title">Sell Holding</h1>
                         </div>
                         <div class="panel-body">
                             <div class="row">
                                 <div class="form-group">
                                     <label>Ticker Symbol:</label>
-                                <!--     <input type="text" class="form-control" th:field="*{symbol}"/> -->
-                                	<select id="symbol" th:field="*{symbol}">
-									  <option value="MSFT">MSFT</option>
-									  <option value="GOOG">GOOG</option>
-									  <option value="BRKB">BRKB</option>
-									  <option value="IBM">IBM</option>
-									  <option value="NFLX">NFLX</option>
-									</select>
+                                    <label th:text="*{symbol}">OOO</label>
+                                	<input type="hidden" class="form-control" th:field="*{symbol}"/>
+                                	<label>Current Quantity Held: </label>
+                                	<label th:text="*{currentQuantity}">-10.0</label>
                                 </div>
-                                <div class="col-md-4 form-group">
-                                    <label>Share Quantity:</label>
-                                    <input type="text" class="form-control" name="quantity" th:field="*{shareQuantity}" placeholder="10" required/>
+                                <div class="col-md-3 form-group">
+                                    <label>Share Quantity To Sell:</label>
+                                    <input type="number" class="form-control" name="quantity" 
+                                    th:field="*{saleQuantity}" placeholder="10" min="0.001" step="0.001" max="2000" th:attr="max=${amountHeld}" required/>
                                     <div class="help-block with-errors"></div>
                                 </div>
                                 
@@ -53,7 +50,7 @@
 	</tr> -->
 	<tr>
 		<td>User:</td>
-		<td th:text="${user.fullName}">User Name</td>
+		<td th:text="${user.handle}">User Name</td>
 	</tr>
 	<tr>
 		<td>Original Cash:</td>
@@ -63,19 +60,6 @@
 		<td>Current Cash:</td>
 		<td th:text="${ '$' + #numbers.formatDecimal(account.currentCash, 1, 2)}">$1.00</td>
 	</tr>
-</table>
-<table id="holdingViews" class="table">
-<caption>Holdings List</caption>
-    <tr>
-        <th style="width: 100px;">Ticker Symbol</th>
-        <th style="width: 100px;">Share Quantity</th>
-        <th style="width: 100px;">Issuing Company</th>
-    </tr>
-    <tr th:each="holding : ${holdingSet}">
-        <td th:text="${holding.tickerSymbol}">NULL</td>
-        <td th:text="${holding.shareQuantity}">99.99</td>
-        <td th:text="${holding.companyName}">Olsonsoft</td>
-    </tr>
 </table>
 </body>
 </html>

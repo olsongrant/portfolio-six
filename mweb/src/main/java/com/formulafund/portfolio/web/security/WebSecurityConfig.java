@@ -89,6 +89,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 					"/user/changePassword",
 					"/registrationConfirm*",
 					"/user/**/show",
+					"/user/**/delete",
+					"/account/**/delete",
 					"/register",
 					"/login",
 					"/holdings/h",

@@ -35,13 +35,18 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.formulafund.portfolio.data.commands.BuyCommand;
+import com.formulafund.portfolio.data.commands.DeleteUserCommand;
 import com.formulafund.portfolio.data.commands.RegisterUserCommand;
 import com.formulafund.portfolio.data.commands.SocialUserCommand;
 import com.formulafund.portfolio.data.model.Account;
 import com.formulafund.portfolio.data.model.ApplicationUser;
 import com.formulafund.portfolio.data.model.FacebookUser;
+import com.formulafund.portfolio.data.model.PasswordResetToken;
+import com.formulafund.portfolio.data.model.Transaction;
 import com.formulafund.portfolio.data.model.VerificationToken;
 import com.formulafund.portfolio.data.services.AccountService;
+import com.formulafund.portfolio.data.services.PasswordResetTokenService;
+import com.formulafund.portfolio.data.services.TransactionService;
 import com.formulafund.portfolio.data.services.UserService;
 import com.formulafund.portfolio.data.services.VerificationTokenService;
 import com.formulafund.portfolio.web.commands.AccountCommand;
@@ -60,16 +65,22 @@ public class UserController {
 	private UserService userService;
 	private ApplicationEventPublisher eventPublisher;
 	private VerificationTokenService verificationTokenService;
+	private TransactionService transactionService;
+	private PasswordResetTokenService passwordTokenService;
 		
 	public UserController(AccountService aService, 
 						  UserService uService,
 						  MessageSource mSource,
 						  ApplicationEventPublisher anEventPublisher,
-						  VerificationTokenService aVerificationTokenService) {
+						  VerificationTokenService aVerificationTokenService,
+						  TransactionService aTransactionService,
+						  PasswordResetTokenService aPasswordTokenService) {
 		this.accountService = aService;
 		this.userService = uService;
 		this.eventPublisher = anEventPublisher;
 		this.verificationTokenService = aVerificationTokenService;
+		this.transactionService = aTransactionService;
+		this.passwordTokenService = aPasswordTokenService;
 	}
 	
 	@RequestMapping({"user", "user/index"})
@@ -95,15 +106,70 @@ public class UserController {
 		return "user/show";
 	}
 	
-
+	@GetMapping("/user/{userid}/delete")
+	public String provideDeletionForm(@PathVariable String userid, Model model, HttpServletRequest request) {
+		log.info("The deletion of user with identifier " + userid + " has been requested.");
+		Long idLong = Long.valueOf(userid);
+		ApplicationUser user = this.userService.findById(idLong);
+		if ((request.getRemoteUser() != null) && (request.getRemoteUser().equals(user.getEmailAddress()))) {
+			model.addAttribute("user", user);
+			DeleteUserCommand command = new DeleteUserCommand();
+			command.setUserId(userid);
+			command.setEmailAddress(user.getEmailAddress());
+			model.addAttribute("command", command);
+			return "user/delete";
+		} else {
+			model.addAttribute("resultmessage", "Unexpected: something went awry with the logged-in user information. "
+					+ "Recommendation: log out and log back in before trying again.");
+			return "simple";
+		}
+		
+	}
+	
+	@PostMapping("/user/delete")
+	public String deleteUserEntirely(@Valid @ModelAttribute("command") DeleteUserCommand command, 
+    						   BindingResult bindingResult, HttpServletRequest request, Model model) {
+    	log.info("UserController::deleteUserEntirely");
+    	log.info("DeleteUserCommand: " + command);
+    	if (bindingResult.hasErrors()) {
+    		return "user/registration";
+    	} else {
+    		Long idLong = Long.valueOf(command.getUserId());
+    		ApplicationUser user = this.userService.findById(idLong);
+    		Set<Account> accounts = user.getAccounts();
+    		log.info("User has " + accounts.size() + " accounts to be deleted.");
+    		for (Account account: accounts) {
+    			Set<Transaction> transactions = account.getTransactions();  			
+    			log.info("Account " + account.getName() + " has " + transactions.size() + " to be deleted.");
+    			for (Transaction transaction: transactions) {
+    				log.info("Transaction to be deleted: " + transaction.toString());
+    				this.transactionService.delete(transaction);
+    			}
+    			this.accountService.delete(account);
+    		}
+    		VerificationToken aToken = this.verificationTokenService.findByUser(user);
+    		if (aToken != null) {
+    			this.verificationTokenService.delete(aToken);
+    		}
+    		PasswordResetToken passwordReset = this.passwordTokenService.findByUser(user);
+    		if (passwordReset != null) {
+    			this.passwordTokenService.delete(passwordReset);
+    		}
+    		this.userService.delete(user);
+    		return "redirect:/logout";
+    	}
+    	
+	}
 	
 	@RequestMapping(value="/logout",method = RequestMethod.GET)
     public String logout(Principal principal, HttpServletRequest request){
-		Authentication authentication = (Authentication) principal;
-//		org.springframework.security.core.userdetails.User securityCoreUser = 
-//				(org.springframework.security.core.userdetails.User) authentication.getPrincipal();
-		log.info(authentication.getPrincipal().getClass().getName());
-//		log.info(securityCoreUser.getUsername() + " logged out");
+		
+		try {
+			Authentication authentication = (Authentication) principal;
+			log.info("logging out: " + authentication.getPrincipal().getClass().getName());
+		} catch(Exception e) {
+			log.info("exception caught from logout(): " + e.getMessage());
+		}
         HttpSession httpSession = request.getSession();
         httpSession.invalidate();
         return "redirect:/";

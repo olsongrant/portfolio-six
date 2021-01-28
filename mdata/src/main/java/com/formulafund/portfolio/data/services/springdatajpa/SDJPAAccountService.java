@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import com.formulafund.portfolio.data.commands.BuyCommand;
+import com.formulafund.portfolio.data.commands.SaleCommand;
 import com.formulafund.portfolio.data.model.Account;
 import com.formulafund.portfolio.data.model.StockHolding;
 import com.formulafund.portfolio.data.model.Ticker;
@@ -53,12 +54,12 @@ public class SDJPAAccountService implements AccountService {
 
 	@Override
 	public void delete(Account object) {
-		this.delete(object);
+		this.accountRepository.delete(object);
 	}
 
 	@Override
 	public void deleteById(Long id) {
-		this.deleteById(id);
+		this.accountRepository.deleteById(id);
 	}
 	
 	@Override
@@ -96,4 +97,8 @@ public class SDJPAAccountService implements AccountService {
 											  account);
 	}
 
+	@Override
+	public Float sellAndReportRemainingCash(SaleCommand aSaleCommand) {
+		return this.sellAndReportRemainingCash(this.transactionService, this.priceService, this, this.tickerService, aSaleCommand);
+	}
 }

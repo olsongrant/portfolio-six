@@ -10,6 +10,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.formulafund.portfolio.data.commands.BuyCommand;
+import com.formulafund.portfolio.data.commands.SaleCommand;
+import com.formulafund.portfolio.data.exceptions.InadequatePositionException;
+import com.formulafund.portfolio.data.exceptions.InsufficientFundsException;
+import com.formulafund.portfolio.data.exceptions.TickerNotFoundException;
 import com.formulafund.portfolio.data.model.Account;
 import com.formulafund.portfolio.data.model.StockHolding;
 import com.formulafund.portfolio.data.model.Ticker;
@@ -28,6 +32,7 @@ public interface AccountService extends CrudService<Account> {
 	Set<StockHolding> getCurrentHoldings(Account anAccount);
 	Float sellAndReportRemaining(Ticker aTicker, Float quantity, Account anAccount);
 	Float buyAndReportRemainingCash(BuyCommand aBuyCommand);
+	Float sellAndReportRemainingCash(SaleCommand aSaleCommand);
 	
 	public default StockHolding stockHoldingFor(Ticker aTicker, Account anAccount) {
 		Float quantity = this.getCurrentHoldingOf(aTicker, anAccount);
@@ -79,6 +84,28 @@ public interface AccountService extends CrudService<Account> {
 					quantity + " shares.");
 			
 		}
+	}
+	
+	public default Float sellAndReportRemainingCash(TransactionService aTransactionService,
+												    PriceService aPriceService,
+												    AccountService anAccountService,
+												    TickerService aTickerService,
+												    SaleCommand aSaleCommand) {
+		String symbol = aSaleCommand.getSymbol();
+		Optional<Ticker> potentialTicker = aTickerService.findTickerBySymbol(symbol);
+		if (potentialTicker.isEmpty()) {
+			throw new TickerNotFoundException("search for ticker by symbol " + symbol + " failed.");
+		}
+		Ticker aTicker = potentialTicker.get();
+		Long accountIdLong = Long.valueOf(aSaleCommand.getAccountId());
+		Account account = anAccountService.findById(accountIdLong);
+		Float aSaleQuantity = aSaleCommand.getSaleQuantity();
+		return this.sellAndReportRemaining(aTransactionService, 
+												aPriceService,
+												anAccountService,
+												aTicker, 
+												aSaleQuantity, 
+												account);
 	}
 	
 	public default Float buyAndReportRemainingCash(TransactionService txnService, PriceService aPriceService,

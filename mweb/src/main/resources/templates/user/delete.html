@@ -1,0 +1,54 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'user')}">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Delete User Form</title>
+</head>
+<body>
+	<div class="container-fluid">
+		<div class="card">
+			<div class="col-md-6 col-md-offset-3">
+
+				<h2 class="card-header text-center">Delete User Record
+					Entirely</h2>
+				<div class="card-body">
+					<form role="form" data-toggle="validator" th:object="${command}"
+						th:action="@{/user/delete}" method="POST" enctype="utf8">
+						<div class="form-group">
+							<label th:text="#{label.user.email}">email</label> <label
+								th:text="*{emailAddress}">email_address</label> <input
+								id="userEmail" th:field="*{emailAddress}" type="hidden" /> <input
+								id="userId" th:field="*{userId}" type="hidden" />
+						</div>
+<!-- 						<div class="form-group"> -->
+<!-- 							<label>Confirm Password</label> <input -->
+<!-- 								class="form-control" id="inputPassword" -->
+<!-- 								placeholder="Enter your password" type="password" -->
+<!-- 								data-minlength="4" -->
+<!-- 								data-error="At least 4 characters is required" -->
+<!-- 								th:field="*{password}" required /> -->
+<!-- 							<div class="help-block with-errors"></div> -->
+<!-- 							<p th:each="error : ${#fields.errors('password')}" -->
+<!-- 								th:text="${error}">Validation error</p> -->
+<!-- 						</div> -->
+						<div class="form-group">
+							<label th:for="${#ids.next('acknowledged')}"><input
+								id="acknowledged" type="checkbox" th:field="*{acknowledged}"
+								required /> I understand that my user record and any/all of its
+								accounts will be deleted upon submission of this form, and that
+								there is no way, after completion, to recover the records. I also understand that,
+								if I wish to set up a user and accounts again in the future, I'll be required
+								to register anew.</label>
+
+							<div class="help-block with-errors"></div>
+						</div>
+						<button type="submit" class="btn-block"
+							th:text="#{label.form.submit}">submit</button>
+					</form>
+					<hr/>
+					<a href="#" th:href="@{'/user/' + ${command.userId} + '/show'}">Cancel</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+</body>

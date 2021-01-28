@@ -5,9 +5,11 @@
     <title>Portfolios Application: Welcome</title>
 </head>
 <body>
-<p th:if="${hasInfo}" th:text="${info}">informational message</p>
-<a href="#" th:href="@{'/'}">Home</a>
 <h1>Registered -- waiting on email confirmation </h1>
+<p th:if="${hasInfo}" th:text="${info}">informational message</p>
+<hr/>
+<a href="#" th:href="@{'/'}">Home</a>
+
 
 
 

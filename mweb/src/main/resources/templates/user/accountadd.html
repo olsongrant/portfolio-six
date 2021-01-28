@@ -5,8 +5,7 @@
     <title>Add Account To User</title>
 </head>
 <body>
-<h1>Add Account To User</h1>
-<h2 th:text="${'User Name: ' + (addaccount.userFullName)}">User Name Goes Here</h2>
+
 <!-- <table id="accounts" class="table">
 	<caption>Existing accounts</caption>
     <tr>
@@ -23,12 +22,13 @@
         <div class="col-md-6 col-md-offset-3">
             <form role="form" data-toggle="validator" th:object="${addaccount}" th:action="@{/account/}" method="post">
                 <input type="hidden" th:field="*{id}"/>
-                <div class="panel-group">
-                    <div class="panel panel-primary">
-                        <div class="panel-heading">
-                            <h1 class="panel-title">Add Account</h1>
+                <div class="panel-group-success">
+                    <div class="panel-success panel-primary-success">
+                        <div class="panel-heading-success">
+                            <h1 class="panel-title-success">Add Account to User</h1>
+                            <h2 th:text="${'User Name: ' + (addaccount.userFullName)}">User Name Goes Here</h2>
                         </div>
-                        <div class="panel-body">
+                        <div class="panel-body-success">
                             <div class="row">
                                 <div class="col-md-9 form-group">
                                     <label>Account Name:</label>
@@ -41,7 +41,7 @@
                                 </div>
                             </div>
 						</div>
-                    <button type="submit" class="btn btn-primary">Submit</button>
+                    <button type="submit" >Submit</button>
                 </div>
                 </div>
             </form>

@@ -19,7 +19,11 @@ public interface UserService extends CrudService<ApplicationUser> {
 	ApplicationUser registerSocialUser(SocialUserCommand socialUser);
 
 	public default ApplicationUser setupUser(RegisterUserCommand command, PasswordEncoderService encoder) {
-		ApplicationUser user = new ApplicationUser();
+		ApplicationUser user = new ApplicationUser();  // in a really unlikely scenario, this will be thrown away
+		Optional<ApplicationUser> potentialExistingUser = this.findByEmailAddress(command.getEmail());
+		if (potentialExistingUser.isPresent()) {
+			user = potentialExistingUser.get();
+		}
 		user.setEmailAddress(command.getEmail());
 		user.setFirstName(command.getFirstName());
 		user.setLastName(command.getLastName());
@@ -32,6 +36,10 @@ public interface UserService extends CrudService<ApplicationUser> {
 
 	public default ApplicationUser setupSocialUser(SocialUserCommand command) {
 		ApplicationUser user = new ApplicationUser();
+		Optional<ApplicationUser> potentialExistingUser = this.findByEmailAddress(command.getEmail());
+		if (potentialExistingUser.isPresent()) {
+			user = potentialExistingUser.get();
+		}
 		user.setEmailAddress(command.getEmail());
 		user.setFirstName(command.getFirstName());
 		user.setLastName(command.getLastName());

@@ -4,8 +4,9 @@
     <title>Resend Verification</title>
 </head>
 <body>
-<div class="container mt-5">
-	<div class="card">
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-md-6 col-md-offset-3">
 		<h5 class="card-header text-center" th:text="#{label.form.title}">
 			form
 			</h5>
@@ -21,9 +22,10 @@
 						<p th:each="error : ${#fields.errors('email')}" th:text="${error}">Validation
 							error</p>
 					</div>
-					<button type="submit" class="btn btn-primary btn-block">Resend Verification</button>
+					<button type="submit" class="btn-block">Resend Verification</button>
 				</form>
 			</div>
+		</div>
 	</div>
 </div>
 

@@ -18,6 +18,8 @@ import org.springframework.ui.Model;
 import com.formulafund.portfolio.data.model.Account;
 import com.formulafund.portfolio.data.model.ApplicationUser;
 import com.formulafund.portfolio.data.services.AccountService;
+import com.formulafund.portfolio.data.services.PasswordResetTokenService;
+import com.formulafund.portfolio.data.services.TransactionService;
 import com.formulafund.portfolio.data.services.UserService;
 import com.formulafund.portfolio.data.services.VerificationTokenService;
 
@@ -43,6 +45,12 @@ class UserControllerTest {
 	
 	@Mock
 	VerificationTokenService verificationTokenService;
+	
+	@Mock
+	TransactionService transactionService;
+	
+	@Mock
+	PasswordResetTokenService passwordTokenService;
 
 	@BeforeEach
 	void setUp() throws Exception {
@@ -52,7 +60,9 @@ class UserControllerTest {
 				this.userService,
 				this.messageSource,
 				this.eventPublisher,
-				this.verificationTokenService);
+				this.verificationTokenService,
+				this.transactionService,
+				this.passwordTokenService);
 	}
 
 	@AfterEach

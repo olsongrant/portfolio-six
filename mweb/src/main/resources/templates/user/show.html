@@ -5,25 +5,34 @@
     <title>User Landing</title>
 </head>
 <body>
-<h1 th:text="${'User: ' + (user.fullName) + ' Handle: ' + (user.handle)}">User Landing Page</h1>
+<h1 th:text="${'User Handle: ' + (user.handle)}">User Landing Page</h1>
 <h2>Accounts List</h2>
 <table id="accounts" class="table">
     <tr>
-        <th style="width: 100px;">Account Name</th>
-        <th style="width: 80px;">User Handle</th>
-        <th style="width: 40px;">View</th>
+        <th style="width: 60px;">Account Name</th>
+        <th style="width: 60px;">User Handle</th>
+        <th style="width: 20px;">View</th>
+        <th style="width: 20px;">Delete</th>
     </tr>
     <tr th:each="account : ${accountSet}">
         <td th:text="${account.name}">123</td>
         <td th:text="${account.user.handle}">handle</td>
         <td><a href="#" th:href="@{'/holdings/' + ${account.id} + '/show'}">View</a></td>
+        <td><a href="#" th:href="@{'/account/' + ${account.id} + '/delete'}">Delete</a></td>
     </tr>
 </table>
+
 <div th:if="${allowAdd}">
+	<hr/>
 	<a href="#" th:href="@{'/user/' + ${user.id} + '/addaccount'}">Add Account</a>
 </div>
 <div th:unless="${allowAdd}">
+	<hr/>
 	<a href="#" th:href="@{'/login'}">Log in to add an account</a>
+</div>
+<div th:if="${allowAdd}">
+	<hr/>
+	<a href="#" th:href="@{'/user/' + ${user.id} + '/delete'}">Delete My User Record Entirely</a>
 </div>
 
 

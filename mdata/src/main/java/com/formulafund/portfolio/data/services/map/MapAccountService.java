@@ -1,11 +1,14 @@
 package com.formulafund.portfolio.data.services.map;
 
+import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import com.formulafund.portfolio.data.commands.BuyCommand;
+import com.formulafund.portfolio.data.commands.SaleCommand;
+import com.formulafund.portfolio.data.exceptions.TickerNotFoundException;
 import com.formulafund.portfolio.data.model.Account;
 import com.formulafund.portfolio.data.model.StockHolding;
 import com.formulafund.portfolio.data.model.Ticker;
@@ -62,6 +65,11 @@ public class MapAccountService extends BaseMapService<Account> implements Accoun
 											  ticker, 
 											  aBuyCommand.getShareQuantity(), 
 											  account);
+	}
+
+	@Override
+	public Float sellAndReportRemainingCash(SaleCommand aSaleCommand) {
+		return this.sellAndReportRemainingCash(this.transactionService, this.priceService, this, this.tickerService, aSaleCommand);
 	}
 
 }
