@@ -95,7 +95,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 					"/login",
 					"/holdings/h",
 					"/holdings/**/show",
-					"/oups").permitAll()
+					"/about",
+					"/privacy",
+					"/functionality",
+					"/structure",
+					"/user/all").permitAll()
 			.anyRequest().authenticated()
 			.and()
 		.formLogin()

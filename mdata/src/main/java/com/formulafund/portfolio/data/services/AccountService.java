@@ -179,7 +179,7 @@ public interface AccountService extends CrudService<Account> {
 		if (holdingViews.size() > 0) {
 			return holdingViews;
 		} else {
-			holdingViews.add(aView);
+//			holdingViews.add(aView);
 			return holdingViews;
 		}
 	}

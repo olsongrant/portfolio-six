@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'user')}">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'home')}">
 <head>
     <meta charset="UTF-8"/>
     <title>Purchase Form</title>
@@ -22,11 +22,16 @@
                                     <label>Ticker Symbol:</label>
                                 <!--     <input type="text" class="form-control" th:field="*{symbol}"/> -->
                                 	<select id="symbol" th:field="*{symbol}">
-									  <option value="MSFT">MSFT</option>
-									  <option value="GOOG">GOOG</option>
-									  <option value="BRKB">BRKB</option>
-									  <option value="IBM">IBM</option>
-									  <option value="NFLX">NFLX</option>
+									  <option value="GLD">GLD</option>
+									  <option value="GBTC">GBTC</option>
+									  <option value="EMQQ">EMQQ</option>
+									  <option value="QQQ">QQQ</option>
+									  <option value="KBA">KBA</option>
+									  <option value="XBI">XBI</option>
+									  <option value="SPY">SPY</option>
+									  <option value="IWN">IWN</option>
+									  <option value="IJT">IJT</option>
+									  <option value="GVAL">GVAL</option>								  
 									</select>
                                 </div>
                                 <div class="col-md-4 form-group">

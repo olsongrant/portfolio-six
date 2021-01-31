@@ -6,6 +6,13 @@ public class HoldingView implements Comparable<HoldingView> {
 	private String tickerSymbol;
 	private String companyName;
 	private Float shareQuantity;
+	private Float sharePrice;
+	public Float getSharePrice() {
+		return sharePrice;
+	}
+	public void setSharePrice(Float sharePrice) {
+		this.sharePrice = sharePrice;
+	}
 	public String getAccountName() {
 		return accountName;
 	}
@@ -37,6 +44,18 @@ public class HoldingView implements Comparable<HoldingView> {
 		this.shareQuantity = shareQuantity;
 	}
 	
+	public Float getHoldingValue() {
+		if (this.sharePrice != null) {
+			return (this.sharePrice * this.shareQuantity);			
+		} else {
+			return 0.0f;
+		}
+	}
+	
+	public String getQuoteUrl() {
+		return "https://finance.yahoo.com/quote/" + this.getTickerSymbol();
+	}
+	
 	public boolean isFilledIn() {
 		if (this.accountName == null) return false;
 		if (this.userName == null) return false;
@@ -52,13 +71,16 @@ public class HoldingView implements Comparable<HoldingView> {
 		another.setShareQuantity(this.getShareQuantity());
 		another.setTickerSymbol(this.getTickerSymbol());
 		another.setUserName(this.getUserName());
+		another.setSharePrice(this.getSharePrice());
 		return another;
 	}
 	
+
+	
 	@Override
 	public String toString() {
-		return "HoldingView [accountName=" + accountName + ", userName=" + userName + 
-				", tickerSymbol=" + tickerSymbol + ", companyName=" + companyName + ", shareQuantity=" + shareQuantity
+		return "HoldingView [accountName=" + accountName + ", userName=" + userName + ", tickerSymbol=" + tickerSymbol
+				+ ", companyName=" + companyName + ", shareQuantity=" + shareQuantity + ", sharePrice=" + sharePrice
 				+ "]";
 	}
 	@Override

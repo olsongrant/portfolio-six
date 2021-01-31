@@ -13,6 +13,10 @@ public class RandomPriceService implements PriceService {
 
 	@Override
 	public Float sharePriceForTicker(Ticker aTicker) {
+		return this.sharePriceForSymbol("Makes no difference");
+	}
+	
+	public Float sharePriceForSymbol(String aSymbol) {
 		Float basePrice = 16.0f;
 		Float ourRandom = random.nextFloat();
 		return (basePrice * ourRandom) + basePrice;

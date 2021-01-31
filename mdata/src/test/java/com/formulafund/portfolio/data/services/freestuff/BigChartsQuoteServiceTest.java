@@ -12,13 +12,14 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.formulafund.portfolio.data.model.Exchange;
 import com.formulafund.portfolio.data.model.Ticker;
 import com.formulafund.portfolio.data.services.PriceService;
+import com.formulafund.portfolio.data.services.map.MapCachedPriceService;
 
 @ExtendWith(MockitoExtension.class)
 class BigChartsQuoteServiceTest {
 	
 	Ticker ticker = new Ticker();
 	
-	BigChartsQuoteService priceService = new BigChartsQuoteService();
+	BigChartsQuoteService priceService = new BigChartsQuoteService(new MapCachedPriceService());
 
 	@BeforeEach
 	void setUp() throws Exception {

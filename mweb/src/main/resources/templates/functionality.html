@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	th:replace="~{fragments/layout :: layout (~{::body},'about')}">
+<head>
+<meta charset="UTF-8" />
+<title>Operation Result</title>
+</head>
+<body>
+	<h2 id="virtual-portfolio-functionality">Virtual Portfolio
+		Functionality</h2>
+	<p>As of the end of January, 2021, the functionality in the Virtual
+		Portfolio application is as follows:</p>
+	<h3 id="login-and-registration">Login and Registration</h3>
+	<ul>
+		<li>Traditional registration email username and registered
+			password is offered</li>
+		<li>Passwords are kept in an encrypted format</li>
+		<li>Social media login with Facebook is supported only in
+			development and test modes, as the application review with Facebook
+			has yet to be done</li>
+		<li>each user can delete their own user record and erase their
+			activities in the application</li>
+	</ul>
+	<h3 id="account-management">Account Management</h3>
+	<ul>
+		<li>a user can create one or more accounts</li>
+		<li>each account is initially funded with $100,000</li>
+		<li>users can engage in self-directed transactions of a selection
+			of ten exchange-traded funds (ETFs)</li>
+		<li>users can browse and review accounts of other users</li>
+		<li>users can view the assets in accounts, including both the
+			cash and the market value of the ETF assets in the account</li>
+		<li>the user can delete their own account(s)</li>
+	</ul>
+	<h3 id="transactions-and-asset-prices">Transactions and Asset
+		Prices</h3>
+	<ul>
+		<li>prices of the ETF shares are retrieved from <a
+			href="https://bigcharts.marketwatch.com/">bigcharts.marketwatch.com</a>.
+			Prices are delayed (not real-time)
+		</li>
+		<li>prices are retrieved from the bigcharts source every three
+			minutes and cached within the system to help ensure fast page-loads</li>
+	</ul>
+	<h3 id="the-short-list-of-functionality-im-eyeing-for-the-future">The
+		Short List of Functionality I'm Eyeing For The Future</h3>
+	<ul>
+		<li>account history views</li>
+		<li>charting of account value over time</li>
+		<li>creation of leagues</li>
+		<li>follow / unfollow Functionality</li>
+		<li>account profile descriptions (of the philosophy behind an
+			account)</li>
+	</ul>
+</body>
+</html>

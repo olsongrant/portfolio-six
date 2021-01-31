@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -34,8 +35,10 @@ import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.formulafund.portfolio.data.commands.SocialUserCommand;
+import com.formulafund.portfolio.data.model.Account;
 import com.formulafund.portfolio.data.model.ApplicationUser;
 import com.formulafund.portfolio.data.model.FacebookUser;
+import com.formulafund.portfolio.data.services.AccountService;
 import com.formulafund.portfolio.data.services.UserService;
 import com.formulafund.portfolio.web.converters.SocialConverter;
 
@@ -47,23 +50,83 @@ public class IndexController {
 	private UserService userService;
     private ClientRegistrationRepository clientRegistrationRepository;
     private OAuth2AuthorizedClientService authorizedClientService;
+    private AccountService accountService;
     
     private static final String authorizationRequestBaseUri = "oauth2/authorize-client";
     Map<String, String> oauth2AuthenticationUrls = new HashMap<>();
 	
 	public IndexController(UserService aService,
 							ClientRegistrationRepository aClientRegistrationRepository,
-							OAuth2AuthorizedClientService anAuthorizedClientService) {
+							OAuth2AuthorizedClientService anAuthorizedClientService,
+							AccountService anAccountService) {
 		this.userService = aService;
 		this.clientRegistrationRepository = aClientRegistrationRepository;
 		this.authorizedClientService = anAuthorizedClientService;
+		this.accountService = anAccountService;
 	}
 	
 	@RequestMapping({"", "/", "index", "index.html"})
-	public String getIndex(Model model) {
+	public String getIndex(Model model, HttpServletRequest request) {
 		log.info("root index page was requested");
+		String username = request.getRemoteUser();
+		ApplicationUser user;
+		if (username == null) {
+			username = "sample@address.com";
+			Optional<ApplicationUser> potentialUser = this.userService.findByEmailAddress(username);
+			if (potentialUser.isEmpty()) {
+				return this.provideUserListResponse(model);
+			}
+			user = potentialUser.get();
+			Set<Account> accounts = user.getAccounts();
+			if (accounts.size() > 0) {
+				Account account = accounts.iterator().next();			
+				return "redirect:/holdings/" + account.getId() + "/show";
+			} else {
+				return this.provideUserListResponse(model);
+			}	
+		} else {
+			Optional<ApplicationUser> potentialUser = this.userService.findByEmailAddress(username);
+			if (potentialUser.isEmpty()) {
+				return this.provideUserListResponse(model); 
+			}
+			user = potentialUser.get();
+			Set<Account> accounts = user.getAccounts();
+			if (accounts.size() > 0) {
+				Account account = accounts.iterator().next();			
+				return "redirect:/holdings/" + account.getId() + "/show";
+			} else {
+				Long userIdLong = user.getId();
+				return "redirect:/user/" + userIdLong + "/show";
+			}	
+		}
+
+	}
+
+	
+	@GetMapping("/user/all")
+	public String provideUserListResponse(Model model) {
 		model.addAttribute("userSet", this.userService.findAll());
 		return "index";
+	}
+	
+	@GetMapping("/about")
+	public String provideAboutPage() {
+		return "about";
+	}
+	
+	@GetMapping("/privacy")
+	public String providePrivacyStatement() {
+		return "privacy";
+	}
+	
+	@GetMapping("/functionality")
+	public String provideFunctionalityDescription() {
+		return "functionality";
+	}
+	
+	@GetMapping("/structure")
+	public String provideStructureDoc() {
+		return "structure";
 	}
 	
 	@RequestMapping({"/login", "login"})

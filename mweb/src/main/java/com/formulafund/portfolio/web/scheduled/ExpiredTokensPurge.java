@@ -12,7 +12,6 @@ import com.formulafund.portfolio.data.services.VerificationTokenService;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
-@Transactional
 @Slf4j
 public class ExpiredTokensPurge {
 	
@@ -25,6 +24,7 @@ public class ExpiredTokensPurge {
 		this.verificationTokenService = aVerificationTokenService;
 	}
 	
+	@Transactional
 	@Scheduled(cron = "${expired.purge.cron.expression}")
 	public void purgeExpired() {
 		log.info("Entering ExpiredTokensPurge::purgeExpired");

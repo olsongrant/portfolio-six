@@ -1,5 +1,6 @@
 package com.formulafund.portfolio.data.model;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -27,6 +28,8 @@ public class Account extends BaseEntity {
 	private String name; 
 	private Float originalCash;
 	private Float currentCash;
+	
+	private LocalDateTime accountCreationTime = LocalDateTime.now();
 	
     @ManyToOne
     @JoinColumn(name = "user_id")	

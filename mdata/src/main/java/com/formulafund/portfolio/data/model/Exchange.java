@@ -1,5 +1,5 @@
 package com.formulafund.portfolio.data.model;
 
 public enum Exchange {
-	NYSE, NASDAQ, OTC
+	NYSE, NASDAQ, OTC, BATS
 }

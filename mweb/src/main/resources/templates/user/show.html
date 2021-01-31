@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'user')}">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'home')}">
 <head>
     <meta charset="UTF-8"/>
     <title>User Landing</title>
@@ -12,13 +12,13 @@
         <th style="width: 60px;">Account Name</th>
         <th style="width: 60px;">User Handle</th>
         <th style="width: 20px;">View</th>
-        <th style="width: 20px;">Delete</th>
+        <th th:if="${allowAdd}" style="width: 20px;">Delete</th>
     </tr>
     <tr th:each="account : ${accountSet}">
         <td th:text="${account.name}">123</td>
         <td th:text="${account.user.handle}">handle</td>
         <td><a href="#" th:href="@{'/holdings/' + ${account.id} + '/show'}">View</a></td>
-        <td><a href="#" th:href="@{'/account/' + ${account.id} + '/delete'}">Delete</a></td>
+        <td th:if="${allowAdd}"><a href="#" th:href="@{'/account/' + ${account.id} + '/delete'}">Delete</a></td>
     </tr>
 </table>
 

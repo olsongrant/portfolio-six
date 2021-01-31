@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'user')}">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'home')}">
 <head>
     <meta charset="UTF-8"/>
     <title>Account Landing</title>
@@ -12,13 +12,26 @@
 		<td>User:</td>
 		<td th:text="${user.handle}">User Name</td>
 	</tr>
+		<tr>
+		<td>Date Account Established:</td>
+		<td th:text="${#temporals.format(account.accountCreationTime, 'dd-MMM-yyyy HH:mm')}">01-Feb-1969 08:32</td>
+	</tr>
 	<tr>
 		<td>Original Cash:</td>
-		<td th:text="${ '$' + #numbers.formatDecimal(account.originalCash, 1, 2)}">$1.00</td>
+		<!-- td th:text="${ '$' + #numbers.formatDecimal(account.originalCash, 1, 2)}">$1.00</td -->
+		<td th:text="${#numbers.formatCurrency(account.originalCash)}">$1.00</td>
 	</tr>
 	<tr>
 		<td>Current Cash:</td>
-		<td th:text="${ '$' + #numbers.formatDecimal(account.currentCash, 1, 2)}">$1.00</td>
+		<td th:text="${#numbers.formatCurrency(account.currentCash)}">$1.00</td>
+	</tr>
+	<tr>
+		<td>Total Current Value of Shares Held:</td>
+		<td th:text="${#numbers.formatCurrency(holdingsTotal)}">$1.00</td>
+	</tr>
+	<tr>
+		<td>Total Account Value:</td>
+		<td th:text="${#numbers.formatCurrency(accountTotal)}">$1.00</td>
 	</tr>
 </table>
 <div th:if="${allowAdd}">
@@ -29,13 +42,18 @@
     <tr>
         <th style="width: 100px;">Ticker Symbol</th>
         <th style="width: 100px;">Share Quantity</th>
-        <th style="width: 100px;">Issuing Company</th>
+        <th style="width: 100px;">Issuing Company / ETF Name</th>
+        <th style="width: 50px;">Market Value</th>
         <th th:if="${allowAdd}" style="width: 70px;">Sell</th>
     </tr>
     <tr th:each="holding : ${holdingSet}">
-        <td th:text="${holding.tickerSymbol}">NULL</td>
+        <td>
+        	<a th:href="@{${holding.quoteUrl}}" 
+        		th:text="${holding.tickerSymbol}" th:target="_blank">NULL</a>
+        </td>
         <td th:text="${holding.shareQuantity}">99.99</td>
         <td th:text="${holding.companyName}">Olsonsoft</td>
+        <td th:text="${#numbers.formatCurrency(holding.holdingValue)}">$1,999.03</td>
         <td th:if="${allowAdd}">
 			<a href="#" th:href="@{'/holdings/' + ${account.id} + '/sell/' + ${holding.tickerSymbol}}">Sell</a>
 		</td>

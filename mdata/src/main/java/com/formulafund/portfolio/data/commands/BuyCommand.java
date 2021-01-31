@@ -27,4 +27,12 @@ public class BuyCommand {
 	public void setAccountId(String anId) {
 		this.accountId = anId;
 	}
+	
+	public static BuyCommand with(Long anAccountId, String aSymbol, Float aQuantity) {
+		BuyCommand cmd = new BuyCommand();
+		cmd.setAccountId(anAccountId);
+		cmd.setSymbol(aSymbol);
+		cmd.setShareQuantity(aQuantity);
+		return cmd;
+	}
 }

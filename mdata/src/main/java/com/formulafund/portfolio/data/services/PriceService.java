@@ -5,6 +5,7 @@ import com.formulafund.portfolio.data.model.Ticker;
 public interface PriceService {
 	
 	Float sharePriceForTicker(Ticker aTicker);
+	Float sharePriceForSymbol(String aSymbol);
 	
 	public default Float balanceAfterDeduction(Float shareQuantity, Float currentCash, Float sharePrice) {
     	Float deduction = shareQuantity * sharePrice;
