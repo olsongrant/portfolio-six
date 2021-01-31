@@ -23,11 +23,13 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.context.annotation.Primary;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
 @Primary
+@Profile({"mysqldev", "h2dev", "mysqlprod", "map"})
 public class BigChartsQuoteService implements PriceService {
 	
 	private CachedPriceService cachedPriceService;
