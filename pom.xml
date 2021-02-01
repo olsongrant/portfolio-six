@@ -29,15 +29,6 @@
 		<module>mweb</module>
 		<module>mdata</module>
 	</modules>
-<!-- 	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>com.formulafund</groupId>
-				<artifactId>mdata</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-		</dependencies>
-	</dependencyManagement> -->
 	<build>
 		<plugins>
 			<plugin>
