@@ -7,4 +7,4 @@ workflows:
   maven_test:
     jobs:
       - maven/test: # maven/test was original. checkout, build, test, and upload test results
-          command: 'clean test'  # -X for debug
+          command: 'clean install'  # -X for debug
