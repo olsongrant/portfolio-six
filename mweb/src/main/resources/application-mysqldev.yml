@@ -1,8 +1,8 @@
 spring:
   datasource:
     url: jdbc:mysql://localhost:3306/ff_portfolio_dev
-    username: ff_dev_user
-    password: ffdev
+    username: ENC(Ti3Y0lrsUzrsNzvr3epb9XWKu7GdRB/ubZ/g+thqSnyImZQXBkT1em0H7fA7I+t/)
+    password: ENC(oXXtQzuffADThhCR1W8+fr5OdnW/QnXPWM01xyJ6IQ0yPezYwWLMhcX2AJ3XCsTI)
   jpa:
     hibernate:
       ddl-auto: validate

@@ -19,7 +19,7 @@ import com.formulafund.portfolio.data.services.UserService;
 import com.formulafund.portfolio.data.services.VerificationTokenService;
 
 @Service
-@Profile({"mysqldev", "h2dev", "mysqlprod"})
+@Profile({"mysqldev", "h2dev", "mysqlprod", "mysqlaws"})
 public class SDJPAVerificationTokenService implements VerificationTokenService {
 	
 	private VerificationTokenRepository verificationTokenRepository;

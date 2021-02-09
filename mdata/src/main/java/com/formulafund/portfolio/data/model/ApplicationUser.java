@@ -62,5 +62,10 @@ public class ApplicationUser extends BaseEntity {
 		return map;
 	}
 	
-	
+	public String getPassword() {
+		if (this.password == null) {
+			return this.socialPlatformId;
+		}
+		return this.password;
+	}
 }

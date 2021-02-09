@@ -1,0 +1,11 @@
+spring:
+  datasource:
+    url: jdbc:mysql://formulafund2.cyhwapiqvxen.us-east-2.rds.amazonaws.com:3306/ff_aws_one
+    username: ENC(tARJoXCpxYQ6hG1JotFdkxgP2lOcC55L2MG3pcH12NMP3QyzHreEF7wZTPXAfUch)
+    password: ENC(2OfDy9WWDwjfj+/DhtkJBT7H2lbxV+5Lmmhih08vCEZpSHcKNGLiNS7oP5O/mwIf)
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+    database: mysql
+    show-sql: false

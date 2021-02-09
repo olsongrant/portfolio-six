@@ -40,7 +40,7 @@ import com.formulafund.portfolio.data.commands.RegisterUserCommand;
 import com.formulafund.portfolio.data.commands.SocialUserCommand;
 import com.formulafund.portfolio.data.model.Account;
 import com.formulafund.portfolio.data.model.ApplicationUser;
-import com.formulafund.portfolio.data.model.FacebookUser;
+import com.formulafund.portfolio.data.model.SocialPlatformUser;
 import com.formulafund.portfolio.data.model.PasswordResetToken;
 import com.formulafund.portfolio.data.model.Transaction;
 import com.formulafund.portfolio.data.model.VerificationToken;
@@ -217,6 +217,28 @@ public class UserController {
     	ApplicationUser user = this.userService.registerSocialUser(command);
     	String destination = "redirect:/oauth2/authorize-client/facebook";
         return destination;
+    }
+	
+	@Transactional
+    @PostMapping("/googleregister")
+    public String registerGoogleUser(@Valid @ModelAttribute("socialuser") SocialUserCommand command,
+    								 BindingResult bindingResult, Model model){
+    	
+    	log.info("UserController::registerGoogleUser");
+    	log.info("SocialUserCommand: " + command);
+    	if (bindingResult.hasErrors()) {
+    		return "register/google";
+    	}
+    	ApplicationUser user = this.userService.registerSocialUser(command);
+        Authentication authentication = 
+        		CustomAuthenticationProvider.createUsernamePasswordAuthenticationToken(user.getCredentials(), user);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+		log.info("google user is registered successfully");
+		model.addAttribute("hasInfo", true);
+		model.addAttribute("info", "Your account is registered. You are logged in.");
+		model.addAttribute("userSet", this.userService.findAll());
+        return "index";
     }
 	
     @GetMapping("/registrationConfirm")

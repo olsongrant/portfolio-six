@@ -29,7 +29,7 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 @Primary
-@Profile({"mysqldev", "h2dev", "mysqlprod", "map"})
+@Profile({"mysqldev", "h2dev", "mysqlprod", "map", "mysqlaws"})
 public class BigChartsQuoteService implements PriceService {
 	
 	private CachedPriceService cachedPriceService;

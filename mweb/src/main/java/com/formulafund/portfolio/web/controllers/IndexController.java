@@ -37,7 +37,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.formulafund.portfolio.data.commands.SocialUserCommand;
 import com.formulafund.portfolio.data.model.Account;
 import com.formulafund.portfolio.data.model.ApplicationUser;
-import com.formulafund.portfolio.data.model.FacebookUser;
+import com.formulafund.portfolio.data.model.SocialPlatformUser;
 import com.formulafund.portfolio.data.services.AccountService;
 import com.formulafund.portfolio.data.services.UserService;
 import com.formulafund.portfolio.web.converters.SocialConverter;
@@ -169,11 +169,11 @@ public class IndexController {
 
         if (client != null) {
         	String accessToken = client.getAccessToken().getTokenValue();
-        	FacebookUser fbUser = this.getFacebookUser(accessToken);
+        	SocialPlatformUser fbUser = this.getFacebookUser(accessToken);
         	if (fbUser == null) return "loginFailure";
     	    Optional<ApplicationUser> potentialUser = this.userService.findByEmailAddress(fbUser.getEmail());
     	    if (potentialUser.isEmpty()) {
-    	    	SocialUserCommand command = SocialConverter.commandForFacebookUser(fbUser);
+    	    	SocialUserCommand command = SocialConverter.commandForSocialPlatformUser(fbUser);
     	    	model.addAttribute("socialuser", command);
     	    	return "register/social";
     	    }
@@ -220,7 +220,7 @@ public class IndexController {
     	return "loginFailure";
     }
     
-	public FacebookUser getFacebookUser(String accessToken) {
+	public SocialPlatformUser getFacebookUser(String accessToken) {
 		RestTemplate restTemplate = new RestTemplate();
 		String fields = "email,id,first_name,last_name";
 		String jsonResponse = restTemplate.getForObject("https://graph.facebook.com/me/?fields=" +  fields + "&access_token=" + accessToken, String.class);
@@ -229,7 +229,7 @@ public class IndexController {
 
         //read json file and convert to customer object
         try {
-			FacebookUser fbUser = objectMapper.readValue(jsonResponse, FacebookUser.class);
+			SocialPlatformUser fbUser = objectMapper.readValue(jsonResponse, SocialPlatformUser.class);
 			log.info("fbUser: " + fbUser);
 			return fbUser;
 		} catch (IOException e) {

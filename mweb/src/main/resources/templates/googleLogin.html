@@ -5,13 +5,13 @@
 <meta charset="UTF-8" />
 <meta name="google-signin-client_id" content="775071558769-8e91vg1mqvpd7c73i5frmsjtoeitcjnj.apps.googleusercontent.com">
 <script src="https://apis.google.com/js/platform.js" async defer></script>
-<title>Portfolios Application: Log In</title>
+<title>Portfolios Application: Log In With Google</title>
 </head>
 <body>
 	<div class="container-fluid" style="margin-top: 20px">
 		<div class="row">
 			<div class="col-md-6 col-md-offset-3">
-				<h1 class="card-header">Log in to the Portfolios Application!</h1>
+				<h1 class="card-header">Use Virtual Portfolio with Google Sign-in!</h1>
 				<div class="card-body">
 					<div>
 						<p th:if="${previousAttemptMessage}"
@@ -19,75 +19,14 @@
 							unsuccessful.</p>
 						<hr />
 					</div>
-					<div th:if="${param.error}" th:text="${param.error}">
-						Invalid username and password.
-						<hr />
-					</div>
-					<div th:if="${param.logout}">
-						You have been logged out.
-						<hr />
-					</div>
-					<div>
-						<form role="form" data-toggle="validator" th:action="@{/login}" method="post">
-							<div>
-								<label> User Name (Email Address)</label>
-							</div>
-							<div class="form-group">
-								<input type="email" name="username" class="form-control"
-									placeholder="me@emailprovider.com" required />
-								<div class="help-block with-errors">
-							</div>
-							<div>
-								<label> Password: </label>
-							</div>
-							
-
-							</div>
-							<div class="form-group">
-								<input type="password" name="password" class="form-control" required />
-								<div class="help-block with-errors">
-							</div>
-							<div class="form-group">
-								<input type="submit" value="Sign In" class="btn-block"/> <input type="hidden"
-									name="${_csrf.parameterName}" value="${_csrf.token}" />
-							</div>
-
-							</div>
-					</form>
-					</div>
-				</div>
-				<div>
-					<hr />
 				</div>
 				<div class="container">
-					<a href="#" th:href="@{'/user/registration'}">Register</a>
-				</div>
-				<div>
-					<hr />
-				</div>
-				<div class="container">
-					<div class="row">
-						<div class="col-md-3">
-							<a class="btn-block" href="/googleLogin"
-								role="button"> <img
-								width="20px" style="margin-bottom: 3px; margin-right: 5px"
-								alt="Google sign-in"
-								src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png" />
-								Continue with Google
-							</a>
-						</div>
-					</div>
-				</div>
-        <hr/>
-				<div th:if="${providePasswordReset}">
-					<hr />
-					<a href="#" th:href="@{'/user/passwordreset'}">Send Password
-						Reset Email</a>
-				</div>
-				<div th:if="${provideResendOption}">
-					<hr />
-					<a href="#" th:href="@{'/resendverification'}">Resend the
-						Registration Verification Email</a>
+				<form role="form" name="googleVerify" id="google" th:action="@{/verify}" method="post">
+         <p>Continue with Google</p>
+				<div class="g-signin2" data-onsuccess="onSignIn"></div>
+				<input type="hidden" name="idToken" value="notAToken" />
+				<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+				</form>
 				</div>
 			</div>
 		</div>

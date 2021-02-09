@@ -12,7 +12,7 @@ import com.formulafund.portfolio.data.repositories.IssuingCompanyRepository;
 import com.formulafund.portfolio.data.services.IssuingCompanyService;
 
 @Service
-@Profile({"mysqldev", "h2dev", "mysqlprod"})
+@Profile({"mysqldev", "h2dev", "mysqlprod", "mysqlaws"})
 public class SDJPAIssuingCompanyService implements IssuingCompanyService {
 	
 	private IssuingCompanyRepository issuingCompanyRepository;

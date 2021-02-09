@@ -1,0 +1,32 @@
+<html>
+
+<head>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css"/>
+<title>Verified</title>
+</head>
+<body>
+<nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="/">home</a>
+    </div>
+      <ul class="nav navbar-nav">
+        <li><a href="/signin ">Sign In</a></li>
+      </ul>
+  </div>
+</nav>
+    <div class="container">
+            <h1>User Google Verification</h1>
+    </div>
+    <div class="container">
+        <label>Token:</label>
+        <p th:text="${token}">token info goes here</p>
+    </div>
+    <hr/>
+    <div class="container">
+        <label>User Info:</label>
+        <p th:text="${userInfo}">Google user info goes here</p>
+    </div>    
+</body>
+
+</html>

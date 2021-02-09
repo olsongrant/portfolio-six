@@ -12,7 +12,7 @@ import com.formulafund.portfolio.data.repositories.PasswordResetTokenRepository;
 import com.formulafund.portfolio.data.services.PasswordResetTokenService;
 
 @Service
-@Profile({"mysqldev", "h2dev", "mysqlprod"})
+@Profile({"mysqldev", "h2dev", "mysqlprod", "mysqlaws"})
 public class SDJPAPasswordResetTokenService implements PasswordResetTokenService {
 	
 	private PasswordResetTokenRepository passwordTokenRepository;

@@ -13,7 +13,7 @@ import com.formulafund.portfolio.data.services.CachedPriceService;
 
 
 @Service
-@Profile({"mysqldev", "h2dev", "mysqlprod"})
+@Profile({"mysqldev", "h2dev", "mysqlprod", "mysqlaws"})
 public class SDJPACachedPriceService implements CachedPriceService {
 	
 	private CachedPriceRepository cachedPriceRepository;

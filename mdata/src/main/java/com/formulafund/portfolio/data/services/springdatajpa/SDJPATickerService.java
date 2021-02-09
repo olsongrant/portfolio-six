@@ -14,7 +14,7 @@ import com.formulafund.portfolio.data.repositories.TickerRepository;
 import com.formulafund.portfolio.data.services.TickerService;
 
 @Service
-@Profile({"mysqldev", "h2dev", "mysqlprod"})
+@Profile({"mysqldev", "h2dev", "mysqlprod", "mysqlaws"})
 public class SDJPATickerService implements TickerService {
 	
 	private TickerRepository tickerRepository;
