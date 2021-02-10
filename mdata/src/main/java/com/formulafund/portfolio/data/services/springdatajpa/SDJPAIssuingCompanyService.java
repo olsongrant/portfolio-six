@@ -1,6 +1,7 @@
 package com.formulafund.portfolio.data.services.springdatajpa;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -15,6 +16,12 @@ import com.formulafund.portfolio.data.services.IssuingCompanyService;
 @Profile({"mysqldev", "h2dev", "mysqlprod", "mysqlaws"})
 public class SDJPAIssuingCompanyService implements IssuingCompanyService {
 	
+	@Override
+	public Optional<IssuingCompany> findByName(String aName) {
+		List<IssuingCompany> companyList = this.issuingCompanyRepository.findByFullName(aName);
+		return Optional.ofNullable(companyList.get(0));
+	}
+
 	private IssuingCompanyRepository issuingCompanyRepository;
 	
 	public SDJPAIssuingCompanyService(IssuingCompanyRepository icRepository) {

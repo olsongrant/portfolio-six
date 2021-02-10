@@ -44,11 +44,11 @@ public interface TransactionService extends CrudService<Transaction> {
 	}
 
 	public default Set<Transaction> allPurchasesForPortfolio(Account anAccount) {
-		Set<Transaction> purchases = this.allPurchases()
+		Set<Transaction> purchasesForPortfolio = this.allTransactionsForAccount(anAccount)
 				.stream()
-				.filter(p -> anAccount.equals(p.getAccount()))
+				.filter(s -> TransactionType.PURCHASE.equals(s.getTransactionType()))
 				.collect(Collectors.toSet());
-		return purchases;
+			return purchasesForPortfolio;
 	}
 
 	public default Set<Transaction> allSales() {
@@ -66,9 +66,9 @@ public interface TransactionService extends CrudService<Transaction> {
 	}
 
 	public default Set<Transaction> allSalesForAccount(Account anAccount) {
-		Set<Transaction> salesForPortfolio = this.allSales()
+		Set<Transaction> salesForPortfolio = this.allTransactionsForAccount(anAccount)
 			.stream()
-			.filter(s -> anAccount.equals(s.getAccount()))
+			.filter(s -> TransactionType.SALE.equals(s.getTransactionType()))
 			.collect(Collectors.toSet());
 		return salesForPortfolio;
 	}
@@ -81,19 +81,13 @@ public interface TransactionService extends CrudService<Transaction> {
 	}
 	
 	public default Set<Transaction> salesForAccount(Account anAccount) {
-		Set<Transaction> sales = this.findAll()
-			.stream()
-			.filter(sp -> anAccount.equals(sp.getAccount()))
-			.filter(t -> TransactionType.SALE.equals(t.getTransactionType()))
-			.collect(Collectors.toSet());
-		return sales;
+		return this.allSalesForAccount(anAccount);
 	}
 
 
 	public default Set<Transaction> purchasesForAccount(Account anAccount) {
-		Set<Transaction> purchases = this.findAll()
+		Set<Transaction> purchases = this.allTransactionsForAccount(anAccount)
 				.stream()
-				.filter(n -> anAccount.equals(n.getAccount()))
 				.filter(t -> TransactionType.PURCHASE.equals(t.getTransactionType()))
 				.collect(Collectors.toSet());
 		return purchases;

@@ -1,6 +1,8 @@
 package com.formulafund.portfolio.data.repositories;
 
+import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 import java.util.stream.Stream;
 
 import org.springframework.data.jpa.repository.Modifying;
@@ -16,11 +18,11 @@ public interface VerificationTokenRepository extends CrudRepository<Verification
 
     VerificationToken findByUser(ApplicationUser user);
 
-    Stream<VerificationToken> findAllByExpiryDateLessThan(Date now);
+    List<VerificationToken> findAllByExpiryDateLessThan(LocalDateTime now);
 
     void deleteByExpiryDateLessThan(Date now);
 
     @Modifying
     @Query("delete from VerificationToken t where t.expiryDate <= ?1")
-    void deleteAllExpiredSince(Date now);
+    void deleteAllExpiredSince(LocalDateTime now);
 }

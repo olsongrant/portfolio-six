@@ -9,10 +9,19 @@ import com.formulafund.portfolio.data.model.Ticker;
 public interface TickerService extends CrudService<Ticker> {
 	
 	public default Optional<Ticker> findTickerBySymbol(String aSymbol) {
-		return this.findAll()
-				.stream()
-				.filter(t -> aSymbol.equalsIgnoreCase(t.getSymbol()))
-				.findAny();
+		return Optional.ofNullable(this.findBySymbol(aSymbol));
+	}
+	
+	public default Ticker findBySymbol(String aSymbol) {
+		Optional<Ticker> potentialTicker = this.findAll()
+		.stream()
+		.filter(t -> aSymbol.equalsIgnoreCase(t.getSymbol()))
+		.findAny();
+		if (potentialTicker.isPresent()) {
+			return potentialTicker.get();
+		} else {
+			return null;
+		}
 	}
 
 	public default Ticker getInstanceFor(String targetTicker, IssuingCompany co, Exchange ex) {

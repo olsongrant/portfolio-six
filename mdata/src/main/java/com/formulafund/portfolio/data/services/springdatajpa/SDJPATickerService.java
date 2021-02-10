@@ -1,5 +1,6 @@
 package com.formulafund.portfolio.data.services.springdatajpa;
 
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -17,6 +18,12 @@ import com.formulafund.portfolio.data.services.TickerService;
 @Profile({"mysqldev", "h2dev", "mysqlprod", "mysqlaws"})
 public class SDJPATickerService implements TickerService {
 	
+	@Override
+	public Ticker findBySymbol(String aSymbol) {
+		List<Ticker> tickers = this.tickerRepository.findBySymbol(aSymbol);
+		return tickers.size() > 0 ? tickers.get(0) : null;
+	}
+
 	private TickerRepository tickerRepository;
 	
 	public SDJPATickerService(TickerRepository tRepository) {

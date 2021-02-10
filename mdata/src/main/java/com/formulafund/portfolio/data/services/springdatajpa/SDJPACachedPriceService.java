@@ -1,6 +1,7 @@
 package com.formulafund.portfolio.data.services.springdatajpa;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -16,6 +17,13 @@ import com.formulafund.portfolio.data.services.CachedPriceService;
 @Profile({"mysqldev", "h2dev", "mysqlprod", "mysqlaws"})
 public class SDJPACachedPriceService implements CachedPriceService {
 	
+	@Override
+	public Optional<CachedPrice> findBySymbol(String aSymbol) {
+		List<CachedPrice> priceList = this.cachedPriceRepository.findByTickerSymbol(aSymbol);
+		CachedPrice aPrice = priceList.size() > 0 ? priceList.get(0) : null;
+		return Optional.ofNullable(aPrice);
+	}
+
 	private CachedPriceRepository cachedPriceRepository;
 	
 	public SDJPACachedPriceService(CachedPriceRepository aCachedPriceRepository) {

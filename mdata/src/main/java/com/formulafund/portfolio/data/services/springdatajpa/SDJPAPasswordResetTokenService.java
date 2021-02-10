@@ -1,6 +1,7 @@
 package com.formulafund.portfolio.data.services.springdatajpa;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.springframework.context.annotation.Profile;
@@ -56,6 +57,7 @@ public class SDJPAPasswordResetTokenService implements PasswordResetTokenService
 
     @Override
     public PasswordResetToken getPasswordResetToken(final String token) {
-        return this.passwordTokenRepository.findByToken(token);
+    	List<PasswordResetToken> tokens = this.passwordTokenRepository.findByToken(token);
+        return tokens.size() > 0 ? tokens.get(0) : null;
     }
 }

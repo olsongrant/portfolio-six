@@ -1,5 +1,6 @@
 package com.formulafund.portfolio.data.services.springdatajpa;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -23,6 +24,22 @@ import com.formulafund.portfolio.data.services.VerificationTokenService;
 @Profile({"mysqldev", "h2dev", "mysqlprod", "mysqlaws"})
 public class SDJPAUserService implements UserService {
 	
+	@Override
+	public Optional<ApplicationUser> findByEmailAddress(String emailAddress) {
+		List<ApplicationUser> userList = this.userRepository.findByEmailAddress(emailAddress);
+		ApplicationUser user = userList.size() > 0 ? userList.get(0) : null;
+		return Optional.ofNullable(user);
+	}
+
+	@Override
+	public Optional<ApplicationUser> findBySocialPlatformId(String platformId) {
+		List<ApplicationUser> userList = this.userRepository.findBySocialPlatformId(platformId);
+		ApplicationUser user = userList.size() > 0 ? userList.get(0) : null;
+		return Optional.ofNullable(user);
+	}
+
+
+
 	private UserRepository userRepository;
 	
 	private PasswordEncoderService encoderService;

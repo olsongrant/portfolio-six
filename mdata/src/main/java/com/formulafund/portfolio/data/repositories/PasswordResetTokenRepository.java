@@ -1,6 +1,8 @@
 package com.formulafund.portfolio.data.repositories;
 
+import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 import java.util.stream.Stream;
 
 import org.springframework.data.jpa.repository.Modifying;
@@ -13,11 +15,11 @@ import com.formulafund.portfolio.data.model.PasswordResetToken;
 
 public interface PasswordResetTokenRepository extends CrudRepository<PasswordResetToken, Long> {
 	
-    PasswordResetToken findByToken(String token);
+    List<PasswordResetToken> findByToken(String token);
 
-    PasswordResetToken findByUser(ApplicationUser user);
+    List<PasswordResetToken> findByUser(ApplicationUser user);
 
-    Stream<PasswordResetToken> findAllByExpiryDateLessThan(Date now);
+    List<PasswordResetToken> findAllByExpiryDateLessThan(LocalDateTime now);
 
     void deleteByExpiryDateLessThan(Date now);
 

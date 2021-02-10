@@ -1,6 +1,8 @@
 package com.formulafund.portfolio.data.services.springdatajpa;
 
 import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.context.annotation.Profile;
@@ -20,6 +22,14 @@ import com.formulafund.portfolio.data.services.TransactionService;
 @Service
 @Profile({"mysqldev", "h2dev", "mysqlprod", "mysqlaws"})
 public class SDJPAAccountService implements AccountService {
+	
+	@Override
+	public Optional<Account> findAccountByName(String aName) {
+		List<Account> accounts = this.accountRepository.findByName(aName);
+		Account account = accounts.size() > 0 ? accounts.get(0) : null;
+		return Optional.ofNullable(account);
+	}
+
 	private AccountRepository accountRepository;
 	private TransactionService transactionService;
 	private PriceService priceService;
