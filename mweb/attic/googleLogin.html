@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	th:replace="~{fragments/layout :: layout (~{::body},'login')}">
+<head>
+<meta charset="UTF-8" />
+<meta name="google-signin-client_id" content="775071558769-8e91vg1mqvpd7c73i5frmsjtoeitcjnj.apps.googleusercontent.com">
+<script src="https://apis.google.com/js/platform.js" async defer></script>
+<title>Log In With Google</title>
+</head>
+<body>
+	<div class="container-fluid" style="margin-top: 20px">
+		<div class="row">
+			<div class="col-md-6 col-md-offset-3">
+				<h1 class="card-header">Use Virtual Portfolio with Google Sign-in!</h1>
+				<div class="card-body">
+					<div>
+						<p th:if="${previousAttemptMessage}"
+							th:text="${previousAttemptMessage}">Previous attempt
+							unsuccessful.</p>
+						<hr />
+					</div>
+				</div>
+				<div class="container">
+				<form role="form" name="googleVerify" id="google" th:action="@{/verify}" method="post">
+         <p>Continue with Google</p>
+				<div class="g-signin2" data-onsuccess="onSignIn"></div>
+				<input type="hidden" name="idToken" value="notAToken" />
+				<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+				</form>
+				</div>
+			</div>
+		</div>
+	</div>
+      <script>
+    function onSignIn(googleUser) {
+        var profile = googleUser.getBasicProfile();
+        console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
+        console.log('Name: ' + profile.getName());
+        console.log('Image URL: ' + profile.getImageUrl());
+        console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
+        var id_token = googleUser.getAuthResponse().id_token;
+        document.googleVerify.idToken.value = id_token;
+        document.googleVerify.submit();
+//         var formData = new FormData();
+//         formData.append("idToken", id_token);
+//         submitFORM('/verify', 'POST', formData);
+      }
+      
+    function signOut() {
+        var auth2 = gapi.auth2.getAuthInstance();
+        auth2.signOut().then(function () {
+          console.log('User signed out.');
+        });
+      }
+      
+    function submitFORM(path, method, formData) {
+        method = method || "post";
+
+        var form = document.createElement("form");
+        form.setAttribute("method", method);
+        form.setAttribute("action", path);
+
+        //Move the submit function to another variable
+        //so that it doesn't get overwritten.
+        form._submit_function_ = form.submit;
+
+        for (var pair of formData.entries()) {
+          var hiddenField = document.createElement("input");
+            hiddenField.setAttribute("type", "hidden");
+            hiddenField.setAttribute("name", pair[0]);
+            hiddenField.setAttribute("value", pair[1]);
+            form.appendChild(hiddenField);      
+        }
+
+        document.body.appendChild(form);
+        form._submit_function_();
+    }
+    </script>
+
+</body>
+
+</html>

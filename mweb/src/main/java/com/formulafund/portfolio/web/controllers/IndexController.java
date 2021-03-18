@@ -1,6 +1,7 @@
 package com.formulafund.portfolio.web.controllers;
 
 import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +26,7 @@ import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.WebAttributes;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -41,6 +43,9 @@ import com.formulafund.portfolio.data.model.SocialPlatformUser;
 import com.formulafund.portfolio.data.services.AccountService;
 import com.formulafund.portfolio.data.services.UserService;
 import com.formulafund.portfolio.web.converters.SocialConverter;
+import com.formulafund.portfolio.web.security.CustomAuthenticationProvider;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -51,6 +56,10 @@ public class IndexController {
     private ClientRegistrationRepository clientRegistrationRepository;
     private OAuth2AuthorizedClientService authorizedClientService;
     private AccountService accountService;
+	protected static final String GOOGLE_API_CLIENT_ID = 
+			"775071558769-8e91vg1mqvpd7c73i5frmsjtoeitcjnj.apps.googleusercontent.com";
+	
+	private GoogleIdTokenVerifier tokenVerifier = GoogleVerifyController.instantiateGoogleHelper(GOOGLE_API_CLIENT_ID);
     
     private static final String authorizationRequestBaseUri = "oauth2/authorize-client";
     Map<String, String> oauth2AuthenticationUrls = new HashMap<>();
@@ -164,54 +173,55 @@ public class IndexController {
 	
     @GetMapping("/loginSuccess")
     public String getLoginInfo(Model model, OAuth2AuthenticationToken authentication) {
-
-        OAuth2AuthorizedClient client = authorizedClientService.loadAuthorizedClient(authentication.getAuthorizedClientRegistrationId(), authentication.getName());
-
-        if (client != null) {
-        	String accessToken = client.getAccessToken().getTokenValue();
-        	SocialPlatformUser fbUser = this.getFacebookUser(accessToken);
-        	if (fbUser == null) return "loginFailure";
-    	    Optional<ApplicationUser> potentialUser = this.userService.findByEmailAddress(fbUser.getEmail());
+    	OAuth2User principal = authentication.getPrincipal();
+    	log.info("principal: " + principal.getAttributes());
+    	log.info("credentials: " + authentication.getCredentials().toString());
+    	log.info("authorized client registration id: " + authentication.getAuthorizedClientRegistrationId());
+    	log.info("OAuth2AuthenticationToken::getName(): " + authentication.getName());
+    	log.info("OAuth2AuthenticationToken::getDetails(): " + authentication.getDetails());
+    	
+    	SocialPlatformUser socialUser = this.populateGoogleUser(authentication);
+    	if ((socialUser.getId() != null) && (!socialUser.getId().isEmpty())) {
+    	    Optional<ApplicationUser> potentialUser = this.userService.findBySocialPlatformId(socialUser.getId());
     	    if (potentialUser.isEmpty()) {
-    	    	SocialUserCommand command = SocialConverter.commandForSocialPlatformUser(fbUser);
+    	    	SocialUserCommand command = SocialConverter.commandForSocialPlatformUser(socialUser);
+    	    	this.userService.setupSocialUser(command);
     	    	model.addAttribute("socialuser", command);
-    	    	return "register/social";
+    	    	return "register/google";
     	    }
-    	    ApplicationUser user = potentialUser.get();
-        	Object credentials = authentication.getCredentials();
-            boolean enabled = true;
-            boolean accountNonExpired = true;
-            boolean credentialsNonExpired = true;
-            boolean accountNonLocked = true;
-            List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_USER"));
-            String pwd = user.getPassword();
-            if (pwd != null) {
-            	pwd = pwd.toLowerCase();
-            } else {
-            	pwd = "socialuser";
-            }
-            org.springframework.security.core.userdetails.User secCoreUser = 
-            		new org.springframework.security.core.userdetails.User
-            				(user.getEmailAddress(), 
-            					pwd, 
-            					enabled, 
-            					accountNonExpired, 
-            					credentialsNonExpired, 
-            					accountNonLocked, 
-            					authorities);
-
-        	
-        	Authentication votingAuth = 
-        			new UsernamePasswordAuthenticationToken(secCoreUser, 
-        													credentials, 
-        													authorities);
-            SecurityContextHolder.getContext().setAuthentication(votingAuth);
-            model.addAttribute("facebookUser", fbUser);
-            String destination = "redirect:/user/" + user.getId() + "/show";
-            return destination;
+    	    ApplicationUser appUser = potentialUser.get();
+    	    if (appUser.getHandle() == null) {
+    	    	SocialUserCommand command = SocialConverter.commandForSocialPlatformUser(socialUser);
+    	    	this.userService.setupSocialUser(command);
+    	    	model.addAttribute("socialuser", command);
+    	    	return "register/google";
+    	    } else {
+    	        Authentication userPassAuth = 
+    	        		CustomAuthenticationProvider.createUsernamePasswordAuthenticationToken(
+    	        				appUser.getCredentials(), appUser);
+    	        SecurityContextHolder.getContext().setAuthentication(userPassAuth);
+    			log.info("google user is logged in successfully");
+    			model.addAttribute("hasInfo", true);
+    			model.addAttribute("info", "You are logged in.");
+    			model.addAttribute("userSet", this.userService.findAll());
+    	        return "index";
+    	    }
+    	} else {
+			model.addAttribute("previousAttemptMessage", "The Google Sign-In process failed.");
+			return "login";        	
         }
 
-        return "loginSuccess";
+    }
+    
+    protected SocialPlatformUser populateGoogleUser(OAuth2AuthenticationToken authToken) {
+    	SocialPlatformUser googleUser = new SocialPlatformUser();
+    	OAuth2User principal = authToken.getPrincipal();
+    	Map<String, Object> attributes = principal.getAttributes();
+    	googleUser.setEmail((String) attributes.get("email"));
+    	googleUser.setFirst_name((String) attributes.get("given_name"));
+    	googleUser.setLast_name((String) attributes.get("family_name"));
+    	googleUser.setId((String) attributes.get("sub"));
+    	return googleUser;
     }
     
     @GetMapping("/loginFailure")

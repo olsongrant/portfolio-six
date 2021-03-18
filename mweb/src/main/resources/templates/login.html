@@ -3,15 +3,13 @@
 	th:replace="~{fragments/layout :: layout (~{::body},'login')}">
 <head>
 <meta charset="UTF-8" />
-<meta name="google-signin-client_id" content="775071558769-8e91vg1mqvpd7c73i5frmsjtoeitcjnj.apps.googleusercontent.com">
-<script src="https://apis.google.com/js/platform.js" async defer></script>
-<title>Portfolios Application: Log In</title>
+<title>Virtual Portfolio: Log In</title>
 </head>
 <body>
 	<div class="container-fluid" style="margin-top: 20px">
 		<div class="row">
 			<div class="col-md-6 col-md-offset-3">
-				<h1 class="card-header">Log in to the Portfolios Application!</h1>
+				<h1 class="card-header">Log in to the Virtual Portfolio Application!</h1>
 				<div class="card-body">
 					<div>
 						<p th:if="${previousAttemptMessage}"
@@ -65,20 +63,24 @@
 				<div>
 					<hr />
 				</div>
+<!-- 				<div class="container"> -->
+<!-- 					<p th:each="url : ${urls}"> -->
+<!-- 						<a th:text="${'Use ' + (url.key) + ' for sign-in'}" th:href="${url.value}">Client</a> -->
+<!-- 					</p> -->
+<!-- 				</div> -->
 				<div class="container">
-					<div class="row">
-						<div class="col-md-3">
-							<a class="btn-block" href="/googleLogin"
-								role="button"> <img
-								width="20px" style="margin-bottom: 3px; margin-right: 5px"
-								alt="Google sign-in"
-								src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png" />
-								Continue with Google
-							</a>
-						</div>
-					</div>
-				</div>
-        <hr/>
+          <div class="row">
+            <div class="col-md-3">
+              <a class="btn-block" href="/oauth2/authorize-client/google"
+                role="button"> <img
+                width="20px" style="margin-bottom: 3px; margin-right: 5px"
+                alt="Google sign-in"
+                src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png" />
+                Continue with Google
+              </a>
+            </div>
+          </div>
+        </div>
 				<div th:if="${providePasswordReset}">
 					<hr />
 					<a href="#" th:href="@{'/user/passwordreset'}">Send Password
@@ -92,52 +94,6 @@
 			</div>
 		</div>
 	</div>
-      <script>
-    function onSignIn(googleUser) {
-        var profile = googleUser.getBasicProfile();
-        console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
-        console.log('Name: ' + profile.getName());
-        console.log('Image URL: ' + profile.getImageUrl());
-        console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
-        var id_token = googleUser.getAuthResponse().id_token;
-        document.googleVerify.idToken.value = id_token;
-        document.googleVerify.submit();
-//         var formData = new FormData();
-//         formData.append("idToken", id_token);
-//         submitFORM('/verify', 'POST', formData);
-      }
-      
-    function signOut() {
-        var auth2 = gapi.auth2.getAuthInstance();
-        auth2.signOut().then(function () {
-          console.log('User signed out.');
-        });
-      }
-      
-    function submitFORM(path, method, formData) {
-        method = method || "post";
-
-        var form = document.createElement("form");
-        form.setAttribute("method", method);
-        form.setAttribute("action", path);
-
-        //Move the submit function to another variable
-        //so that it doesn't get overwritten.
-        form._submit_function_ = form.submit;
-
-        for (var pair of formData.entries()) {
-          var hiddenField = document.createElement("input");
-            hiddenField.setAttribute("type", "hidden");
-            hiddenField.setAttribute("name", pair[0]);
-            hiddenField.setAttribute("value", pair[1]);
-            form.appendChild(hiddenField);      
-        }
-
-        document.body.appendChild(form);
-        form._submit_function_();
-    }
-    </script>
 
 </body>
-
 </html>

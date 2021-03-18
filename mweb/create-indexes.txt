@@ -1,0 +1,8 @@
+create index ic_full_name on issuing_company(full_name); 
+create index most_of_symbol on ticker(symbol(6));
+create index cached_price_symbol on cached_price(ticker_symbol(6));
+create index user_email on application_user(email_address);
+create index user_socialplatformid on application_user(social_platform_id);
+create index pwdtoken_token on password_reset_token(token);
+create index pwdtoken_expiry on password_reset_token(expiry_date);
+create index verificationtoken_token on verification_token(token);

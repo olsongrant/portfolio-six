@@ -33,7 +33,7 @@
           <div class="navbar-collapse collapse" id="main-navbar" 
           	   th:with="securityAction=${shouldLogin}? 'Login/Register' : ${logoutLabel},
           	           securityPath=${shouldLogin}? '/login' : '/logout',
-          	           homeLabel=${shouldLogin}? 'Home - Sample Account' : 'Home - My Account'">
+          	           homeLabel=${shouldLogin}? 'Sample Account' : 'My Account'">
               <ul class="nav navbar-nav navbar-right">
   
                   <li th:fragment="menuItem (path,active,title,glyph,text)" class="active" th:class="${active==menu ? 'active' : ''}">

@@ -74,14 +74,14 @@ public class RegistrationListener implements ApplicationListener<OnRegistrationC
     }
     
     public void sendTestEmail() {
-    	String recipientAddress = "grant.olson@gmail.com";
+    	String recipientAddress = "formulafundmail@gmail.com";
     	String subject = "Test Email Message";
     	String contents = "Hello, I am a test message attempting to prove that sending messages is possible.";
     	SimpleMailMessage mailMessage = new SimpleMailMessage();
     	mailMessage.setTo(recipientAddress);
     	mailMessage.setSubject(subject);
     	mailMessage.setText(contents);
-    	mailMessage.setFrom("formulafundmail@gmail.com");
+    	mailMessage.setFrom("admin@formulafund.com");
     	this.mailSender.send(mailMessage);
     }
 }

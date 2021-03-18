@@ -19,6 +19,7 @@ public class SDJPAIssuingCompanyService implements IssuingCompanyService {
 	@Override
 	public Optional<IssuingCompany> findByName(String aName) {
 		List<IssuingCompany> companyList = this.issuingCompanyRepository.findByFullName(aName);
+		if (companyList.isEmpty()) return Optional.empty();
 		return Optional.ofNullable(companyList.get(0));
 	}
 

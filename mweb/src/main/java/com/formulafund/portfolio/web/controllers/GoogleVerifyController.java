@@ -104,7 +104,7 @@ public class GoogleVerifyController {
 
 
 
-	public SocialPlatformUser populateGoogleUser(GoogleIdToken idToken, StringBuilder sb) {
+	public static SocialPlatformUser populateGoogleUser(GoogleIdToken idToken, StringBuilder sb) {
 		SocialPlatformUser googleUser = new SocialPlatformUser();
 		Payload payload = idToken.getPayload();
 
@@ -139,7 +139,7 @@ public class GoogleVerifyController {
 		
 		
 	
-	private static GoogleIdTokenVerifier instantiateGoogleHelper(String appId) {
+	static GoogleIdTokenVerifier instantiateGoogleHelper(String appId) {
 	    if (appId == null || appId.isEmpty()) return null;
 	    return new GoogleIdTokenVerifier.Builder(new ApacheHttpTransport(), new JacksonFactory())
 	            .setAudience(Collections.singletonList(appId))
