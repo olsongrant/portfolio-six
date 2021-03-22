@@ -40,13 +40,7 @@ public class HoldingsController {
 		this.priceService = aPriceService;
 	}
 	
-//	@GetMapping({"holdings/h", "holdings", "holdings/index", "holdings/"})
-//	public String getIndex(Model model) {
-//		log.debug("holdings index page was requested");
-//		model.addAttribute("holdingSet", this.accountService.getHoldingsView("hodgePodge"));
-//		return "holdings/holdings";
-//	}
-	
+
 	@GetMapping("/holdings/{id}/show")
 	public String showAccountsForUser(@PathVariable String id, Model model, HttpServletRequest request) {
 		log.debug("show holdings for account " + id);

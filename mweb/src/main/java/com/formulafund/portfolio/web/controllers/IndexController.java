@@ -1,9 +1,6 @@
 package com.formulafund.portfolio.web.controllers;
 
-import java.io.IOException;
-import java.security.GeneralSecurityException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -11,17 +8,9 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.core.ResolvableType;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
@@ -30,12 +19,9 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.WebAttributes;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.client.RestTemplate;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.formulafund.portfolio.data.commands.SocialUserCommand;
 import com.formulafund.portfolio.data.model.Account;
 import com.formulafund.portfolio.data.model.ApplicationUser;
@@ -44,7 +30,6 @@ import com.formulafund.portfolio.data.services.AccountService;
 import com.formulafund.portfolio.data.services.UserService;
 import com.formulafund.portfolio.web.converters.SocialConverter;
 import com.formulafund.portfolio.web.security.CustomAuthenticationProvider;
-import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 
 import lombok.extern.slf4j.Slf4j;
@@ -54,13 +39,7 @@ import lombok.extern.slf4j.Slf4j;
 public class IndexController {
 	private UserService userService;
     private ClientRegistrationRepository clientRegistrationRepository;
-    private OAuth2AuthorizedClientService authorizedClientService;
-    private AccountService accountService;
-	protected static final String GOOGLE_API_CLIENT_ID = 
-			"775071558769-8e91vg1mqvpd7c73i5frmsjtoeitcjnj.apps.googleusercontent.com";
-	
-	private GoogleIdTokenVerifier tokenVerifier = GoogleVerifyController.instantiateGoogleHelper(GOOGLE_API_CLIENT_ID);
-    
+   
     private static final String authorizationRequestBaseUri = "oauth2/authorize-client";
     Map<String, String> oauth2AuthenticationUrls = new HashMap<>();
 	
@@ -70,8 +49,6 @@ public class IndexController {
 							AccountService anAccountService) {
 		this.userService = aService;
 		this.clientRegistrationRepository = aClientRegistrationRepository;
-		this.authorizedClientService = anAuthorizedClientService;
-		this.accountService = anAccountService;
 	}
 	
 	@RequestMapping({"", "/", "index", "index.html"})
@@ -230,22 +207,5 @@ public class IndexController {
     	return "loginFailure";
     }
     
-	public SocialPlatformUser getFacebookUser(String accessToken) {
-		RestTemplate restTemplate = new RestTemplate();
-		String fields = "email,id,first_name,last_name";
-		String jsonResponse = restTemplate.getForObject("https://graph.facebook.com/me/?fields=" +  fields + "&access_token=" + accessToken, String.class);
-        //create ObjectMapper instance
-        ObjectMapper objectMapper = new ObjectMapper();
 
-        //read json file and convert to customer object
-        try {
-			SocialPlatformUser fbUser = objectMapper.readValue(jsonResponse, SocialPlatformUser.class);
-			log.info("fbUser: " + fbUser);
-			return fbUser;
-		} catch (IOException e) {
-			e.printStackTrace();
-		} 
-		return null;
-	}
-	
 }
