@@ -4,7 +4,9 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
@@ -40,6 +42,10 @@ class AccountControllerTest {
 	private AccountController controller;
 	
 	MockMvc mockMvc;
+	
+	private AddAccountCommand addAccountCommand = AccountControllerTest.makeAddAccountCommand();
+	
+	
 
 	@BeforeEach
 	void setUp() throws Exception {
@@ -50,26 +56,39 @@ class AccountControllerTest {
 		mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
 	}
 
+	private static AddAccountCommand makeAddAccountCommand() {
+        AddAccountCommand command = new AddAccountCommand();
+        command.setAccountName("universal");
+        command.setId("12");
+        command.setUserFullName("James Kirk");
+        command.setUserHandle("captainkirk");
+		return command;
+	}
+
+	private static ApplicationUser makeCaptainKirkUser() {
+        ApplicationUser kirkUser = ApplicationUser.with("James", "Kirk", "captainkirk");
+        kirkUser.setEmailAddress("kirk@enterprise.com");
+        kirkUser.setId(2L);
+        return kirkUser;
+	}
+	
+	private static Account makeCaptainKirkUniversalAccount() {
+		Account account = Account.with("universal", AccountControllerTest.makeCaptainKirkUser());
+		account.setId(99L);
+		return account;
+	}
+	
 	@AfterEach
 	void tearDown() throws Exception {
 	}
 
 	@Test
 	void testSaveOrUpdate() throws Exception {
-        //given
-        AddAccountCommand command = new AddAccountCommand();
-        command.setAccountName("universal");
-        command.setId("12");
-        command.setUserFullName("James Kirk");
-        command.setUserHandle("captainkirk");
-        
-        ApplicationUser kirkUser = ApplicationUser.with("James", "Kirk", "captainkirk");
-        kirkUser.setEmailAddress("kirk@enterprise.com");
-        
+        //given      
 
         //when
         when(this.accountService.save(any())).thenReturn(new Account());
-        when(this.userService.findById(anyLong())).thenReturn(kirkUser);
+        when(this.userService.findById(anyLong())).thenReturn(AccountControllerTest.makeCaptainKirkUser());
         
         //then
         mockMvc.perform(post("/account")
@@ -78,22 +97,41 @@ class AccountControllerTest {
                 .param("accountName", "universal")
         )
                 .andExpect(status().is3xxRedirection());
-//                .andExpect(view().name("redirect:/recipe/2/ingredient/3/show"));
 	}
 
 	@Test
-	void testProvideAddAccountForm() {
-//		fail("Not yet implemented");
+	void testProvideAddAccountForm() throws Exception {
+        when(this.userService.findById(anyLong())).thenReturn(AccountControllerTest.makeCaptainKirkUser());
+		
+		mockMvc.perform(get("/user/2/addaccount"))
+			   .andExpect(status().isOk())
+			   .andExpect(view().name("user/accountadd"))
+			   .andExpect(model().attributeExists("addaccount"));
 	}
 
 	@Test
-	void testRequestAccountDeleteForm() {
-//		fail("Not yet implemented");
+	void testRequestAccountDeleteForm() throws Exception {
+        when(this.userService.findById(anyLong())).thenReturn(AccountControllerTest.makeCaptainKirkUser());
+        when(this.accountService.findById(anyLong())).thenReturn(AccountControllerTest.makeCaptainKirkUniversalAccount());
+		
+		mockMvc.perform(get("/account/2/delete"))
+			   .andExpect(status().isOk())
+			   .andExpect(view().name("account/delete"))
+			   .andExpect(model().attributeExists("command"));
 	}
 
 	@Test
-	void testDeleteAccount() {
-//		fail("Not yet implemented");
+	void testDeleteAccount() throws Exception {
+        when(this.accountService.findById(anyLong())).thenReturn(AccountControllerTest.makeCaptainKirkUniversalAccount());
+        mockMvc.perform(post("/account/delete")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .param("accountId", "12")
+                .param("accountName", "universal")
+                .param("acknowledged", "true")
+                .param("userId", "2")
+        )
+                .andExpect(status().is3xxRedirection());       
+        
 	}
 
 }
